@@ -1,0 +1,192 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Taxas e Juros</h3>
+            <h6 class="op-7 mb-2">Configuração de Taxas e Juros (Base da Rentabilidade)</h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header card-header-cliente">
+                    <div class="card-title">Taxas e Juros</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tabela-taxas" class="display table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nome da Taxa</th>
+                                    <th>Valor Atual</th>
+                                    <th>Descrição</th>
+                                    <th>Última Alteração</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in taxas %}
+                                <tr>
+                                    <td class="fw-bold">{{ item.nome }}</td>
+                                    <td>
+                                        <span class="badge badge-primary">{{ item.valor }}</span>
+                                    </td>
+                                    <td>{{ item.descricao }}</td>
+                                    <td class="text-muted text-sm">por {{ item.ultima_alteracao }}</td>
+                                    <td class="text-center">
+                                        <div class="form-button-action">
+                                            <button type="button" class="btn btn-link btn-primary"
+                                                data-bs-toggle="modal" data-bs-target="#editTaxaModal"
+                                                data-taxa-id="{{ item.id }}" data-taxa-name="{{ item.nome }}"
+                                                data-taxa-value="{{ item.valor }}" title="Editar Taxa">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-link btn-info" data-bs-toggle="modal"
+                                                data-bs-target="#historyTaxaModal" data-taxa-name="{{ item.nome }}"
+                                                data-history='{{ item.historico | tojson }}' title="Histórico">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="editTaxaModal" tabindex="-1" aria-labelledby="editTaxaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTaxaModalLabel">Editar Taxa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaxaForm">
+                        <input type="hidden" id="taxaId">
+                        <div class="mb-3">
+                            <label for="taxaName" class="form-label">Nome da Taxa</label>
+                            <input type="text" class="form-control" id="taxaName" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="taxaValue" class="form-label">Novo Valor</label>
+                            <input type="text" class="form-control" id="taxaValue" placeholder="Ex: 2,50%">
+                            <div class="form-text">Use apenas números, vírgula, ponto ou porcentagem.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTaxaChanges">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico -->
+    <div class="modal fade" id="historyTaxaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Histórico de Alterações</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 id="historyTaxaName" class="fw-bold mb-3"></h6>
+                    <div id="historyContent"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $("#tabela-taxas").DataTable({
+            "paging": false,
+            "info": false,
+            "searching": false
+        });
+
+        const editModal = document.getElementById('editTaxaModal');
+        if (editModal) {
+            const taxaIdInput = editModal.querySelector('#taxaId');
+            const taxaNameInput = editModal.querySelector('#taxaName');
+            const taxaValueInput = editModal.querySelector('#taxaValue');
+            const modalTitle = editModal.querySelector('.modal-title');
+
+            editModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-taxa-id');
+                const name = button.getAttribute('data-taxa-name');
+                const value = button.getAttribute('data-taxa-value');
+
+                modalTitle.textContent = 'Editar: ' + name;
+                taxaIdInput.value = id;
+                taxaNameInput.value = name;
+                taxaValueInput.value = value;
+            });
+
+            taxaValueInput.addEventListener('input', function (e) {
+                e.target.value = e.target.value.replace(/[^0-9,.\%]/g, '');
+            });
+
+            const saveButton = editModal.querySelector('#saveTaxaChanges');
+            saveButton.addEventListener('click', function () {
+                const id = taxaIdInput.value;
+                const newValue = taxaValueInput.value;
+                const row = document.querySelector(`button[data-taxa-id='${id}']`).closest('tr');
+                if (row) {
+                    row.cells[1].querySelector('span').textContent = newValue;
+                }
+                const modal = bootstrap.Modal.getInstance(editModal);
+                modal.hide();
+            });
+        }
+
+        const historyModal = document.getElementById('historyTaxaModal');
+        if (historyModal) {
+            historyModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const name = button.getAttribute('data-taxa-name');
+                const historyData = JSON.parse(button.getAttribute('data-history') || '[]');
+
+                const modalTitle = historyModal.querySelector('#historyTaxaName');
+                const modalContent = historyModal.querySelector('#historyContent');
+
+                modalTitle.textContent = name;
+                modalContent.innerHTML = '';
+
+                if (historyData && historyData.length > 0) {
+                    let html = '<ul class="list-group list-group-flush">';
+                    historyData.forEach(item => {
+                        html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">${item.data}</small><br>
+                                        <span class="fw-bold text-primary">${item.valor}</span> <span class="text-muted" style="font-size: 0.85em;">(por ${item.usuario})</span>
+                                    </div>
+                                 </li>`;
+                    });
+                    html += '</ul>';
+                    modalContent.innerHTML = html;
+                } else {
+                    modalContent.innerHTML = '<div class="alert alert-info text-center" role="alert"><i class="fas fa-info-circle me-2"></i>Não há histórico de alterações para esta taxa.</div>';
+                }
+            });
+        }
+    });
+</script>
+{% endblock scripts %}

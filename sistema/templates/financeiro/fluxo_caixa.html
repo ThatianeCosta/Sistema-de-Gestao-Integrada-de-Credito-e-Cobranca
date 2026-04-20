@@ -1,0 +1,182 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Fluxo de Caixa</h3>
+            <h6 class="op-7 mb-2">Visão geral das movimentações financeiras por cliente</h6>
+        </div>
+    </div>
+
+    <!-- Cards de Resumo Global -->
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-success bubble-shadow-small">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Total Entradas</p>
+                                <h4 class="card-title text-success">R$ {{ resumo.total_entradas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-danger bubble-shadow-small">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Total Saídas</p>
+                                <h4 class="card-title text-danger">R$ {{ resumo.total_saidas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Saldo Líquido</p>
+                                <h4 class="card-title text-primary">R$ {{ resumo.saldo_liquido }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-danger bubble-shadow-small">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Inadimplência Atual</p>
+                                <h4 class="card-title text-danger">{{ resumo.inadimplencia }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Fluxo por Cliente -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="card-title">Movimentações por Cliente</div>
+                        <div class="input-group w-25">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            <input type="text" id="filtro-fluxo" class="form-control"
+                                placeholder="Pesquisar cliente...">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table id="tabela-fluxo" class="display table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Entradas (R$)</th>
+                                    <th>Saídas (R$)</th>
+                                    <th>Saldo (R$)</th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Lucro Total acumulado de todas as parcelas que já foram pagas.">
+                                        Lucro Acumulado (R$) <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Indica se o saldo do cliente (Entradas - Saídas) é Positivo, Negativo ou Neutro.">
+                                        Status <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in fluxo %}
+                                <tr>
+                                    <td class="fw-bold">{{ item.cliente }}</td>
+                                    <td class="text-success">{{ item.entradas }}</td>
+                                    <td class="text-danger">{{ item.saidas }}</td>
+                                    <td class="fw-bold">{{ item.saldo }}</td>
+                                    <td class="fw-bold text-info">R$ {{ item.lucro_acumulado }}</td>
+                                    <td>
+                                        {% if item.status == 'Positivo' %}
+                                        <span class="badge badge-sober-success">Positivo</span>
+                                        {% elif item.status == 'Negativo' %}
+                                        <span class="badge badge-sober-danger">Negativo</span>
+                                        {% else %}
+                                        <span class="badge badge-sober-warning">Neutro</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // Inicializa os tooltips (descrições que aparecem ao passar o mouse)
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var table = $("#tabela-fluxo").DataTable({
+            "ordering": false,
+            "pageLength": 5,
+            "lengthChange": false,
+            "dom": 'rt<"d-flex justify-content-between pt-2"ip>',
+            "language": {
+                "zeroRecords": "Nenhum registro encontrado",
+                "info": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Próximo"
+                }
+            }
+        });
+
+        $('#filtro-fluxo').on('keyup', function () {
+            table.search($(this).val()).draw();
+        });
+    });
+</script>
+{% endblock scripts %}

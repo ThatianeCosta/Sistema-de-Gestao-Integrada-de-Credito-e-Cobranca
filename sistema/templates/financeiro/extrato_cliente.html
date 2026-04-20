@@ -1,0 +1,182 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+
+    <!-- Cabeçalho da Página com Filtro -->
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Meu Extrato Detalhado</h3> <!-- Título revisado -->
+            <h6 class="op-7 mb-2">Acompanhe todas as suas movimentações financeiras.</h6>
+        </div>
+
+        <!-- Seletor de Data (Filtro Dinâmico) -->
+        <div class="ms-md-auto py-2 py-md-0">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i
+                        class="fas fa-calendar-alt text-muted"></i></span>
+                <select class="form-select border-start-0 ps-0" id="filtroMesAno" onchange="filtrarExtrato()">
+                    <option value="todos">Todos os Períodos</option>
+                    <option value="01/2026">Janeiro 2026</option>
+                    <option value="02/2026">Fevereiro 2026</option>
+                    <option value="12/2025">Dezembro 2025</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards de Resumo (Entradas, Saídas e Saldo) -->
+    <div class="row">
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small"><i
+                                    class="fas fa-arrow-down"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">
+                                    Total Entradas
+                                    <i class="fas fa-info-circle fa-xs text-muted ms-1" data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Soma de todos os valores que você já pagou (parcelas e taxas)."></i>
+                                </p>
+                                <h4 class="card-title text-primary">{{ resumo.total_entradas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-danger bubble-shadow-small"><i
+                                    class="fas fa-arrow-up"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">
+                                    Total Saídas
+                                    <i class="fas fa-info-circle fa-xs text-muted ms-1" data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Valor total do capital que foi liberado para você no início."></i>
+                                </p>
+                                <h4 class="card-title text-danger">{{ resumo.total_saidas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-success bubble-shadow-small"><i
+                                    class="fas fa-wallet"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">
+                                    Saldo Líquido
+                                    <i class="fas fa-info-circle fa-xs text-muted ms-1" data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Diferença entre o que você pagou e o que recebeu. Indica o quanto falta amortizar."></i>
+                                </p>
+                                <h4 class="card-title text-success">{{ resumo.saldo_liquido }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Movimentações -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header card-header-cliente">
+                    <div class="card-title">Movimentações</div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0" id="tabelaExtrato">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Data</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Valor R$</th>
+                                    <th scope="col" class="text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mov in movimentacoes %}
+                                <tr class="linha-extrato"
+                                    data-data="{{ mov.data_pagamento if mov.data_pagamento else mov.vencimento }}">
+                                    <!-- Data: Mostra data de pagamento se houver, senão vencimento -->
+                                    <td>{{ mov.data_pagamento if mov.data_pagamento else mov.vencimento }}</td>
+                                    <td class="fw-bold text-muted">{{ mov.descricao }}</td>
+                                    <td>Pagamento</td> <!-- Tipo fixo para este exemplo -->
+                                    <td class="fw-bold">R$ {{ mov.valor }}</td>
+                                    <td class="text-center">
+                                        <!-- Badge colorido baseado no status -->
+                                        {% if mov.status == 'Pago' %}
+                                        <span class="badge badge-success" style="background-color: #2ECC71;">Pago</span>
+                                        {% else %}
+                                        <span class="badge badge-danger"
+                                            style="background-color: rgb(250, 113, 103);">{{ mov.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">Nenhuma movimentação encontrada.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Script Simples para o Filtro de Data -->
+<script>
+    // Inicializa os balõezinhos de ajuda (tooltips)
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function filtrarExtrato() {
+        // 1. Pega o valor selecionado no dropdown (ex: "01/2026")
+        var filtro = document.getElementById("filtroMesAno").value;
+
+        // 2. Pega todas as linhas da tabela
+        var linhas = document.getElementsByClassName("linha-extrato");
+
+        // 3. Percorre cada linha para ver se deve mostrar ou esconder
+        for (var i = 0; i < linhas.length; i++) {
+            var dataLinha = linhas[i].getAttribute("data-data"); // Pega a data da linha (ex: "12/01/2026")
+
+            // Se o filtro for "todos" ou se a data da linha contém o mês/ano selecionado
+            if (filtro === "todos" || dataLinha.includes(filtro)) {
+                linhas[i].style.display = ""; // Mostra
+            } else {
+                linhas[i].style.display = "none"; // Esconde
+            }
+        }
+    }
+</script>
+{% endblock %}

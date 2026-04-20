@@ -1,0 +1,381 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+
+{% if session['perfil'] == 'gerente' %}
+<!-- ================================================== -->
+<!--      VISÃO DO GERENTE (ORIGINAL)                   -->
+<!-- ================================================== -->
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Dashboard de Histórico de Pagamentos</h3>
+            <h6 class="op-7 mb-2">Acompanhamento financeiro de parcelas e pagamentos</h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="card-title">Histórico de Pagamentos</div>
+                        <div class="input-group w-25">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            <input type="text" id="filtro-historico" class="form-control"
+                                placeholder="Pesquisar cliente...">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table id="historicoPagamentosTable" class="display table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Descrição</th>
+                                    <th>Vencimento</th>
+                                    <th>Data Pagamento</th>
+                                    <th>Valor da Parcela (R$)</th>
+                                    <th>Dias de Atraso</th>
+                                    <th>Status da Parcela</th>
+                                    <th>Observação</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in periodos %}
+                                <tr>
+                                    <td>{{ item.cliente }}</td>
+                                    <td>{{ item.descricao }}</td>
+                                    <td>{{ item.vencimento }}</td>
+                                    <td>
+                                        {% if item.data_pagamento %}
+                                        {{ item.data_pagamento }}
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.valor }}</td>
+                                    <td class="text-center">
+                                        {% if item.dias_atraso > 0 %}
+                                        <span class="text-danger fw-bold">{{ item.dias_atraso }}</span>
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if item.status == 'Pago' %}
+                                        <span class="badge badge-sober-success">Pago</span>
+                                        {% elif item.status == 'Atrasado' %}
+                                        <span class="badge badge-sober-danger">Atrasado</span>
+                                        {% else %}
+                                        <span class="badge badge-sober-warning">{{ item.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.obs }}</td>
+                                    <td class="text-center">
+                                        <a href="https://wa.me/5511999999999?text=Olá {{ item.cliente }}, notamos que a sua parcela de R$ {{ item.valor_atualizado }} está pendente. Podemos ajudar?"
+                                            target="_blank"
+                                            class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
+                                            title="Enviar Lembrete WhatsApp">
+                                            <i class="fab fa-whatsapp me-1"></i> WhatsApp
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- ================================================== -->
+<!--      VISÃO DO CLIENTE (NOVO LAYOUT)                -->
+<!-- ================================================== -->
+<div class="page-inner">
+    <!-- Cabeçalho -->
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Meus Pagamentos</h3>
+            <h6 class="op-7 mb-2">Acompanhe o detalhe de suas parcelas e pagamentos.</h6>
+        </div>
+    </div>
+
+    <!-- Cards de Resumo no Topo -->
+    <div class="row">
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small"><i
+                                    class="fas fa-file-invoice-dollar"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Total do Empréstimo</p>
+                                <h4 class="card-title">{{ resumo.total_emprestimo }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-success bubble-shadow-small"><i
+                                    class="fas fa-tasks"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Parcelas Quitadas</p>
+                                <h4 class="card-title">{{ resumo.parcelas_quitadas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-warning bubble-shadow-small"><i
+                                    class="fas fa-calendar-check"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Próximo Vencimento</p>
+                                <h4 class="card-title">{{ resumo.proximo_vencimento_data }}</h4>
+                                <p class="card-category mt-1 fw-bold">{{ resumo.proximo_vencimento_valor }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Pagamentos Detalhada -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header card-header-cliente">
+                    <div class="card-title">Detalhes das Parcelas</div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tabela-meus-pagamentos" class="table align-items-center mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>N° da Parcela</th>
+                                    <th>Vencimento</th>
+                                    <th>Valor Fixo</th>
+                                    <th>Acréscimos</th>
+                                    <th>Valor Atualizado</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in periodos %}
+                                <tr>
+                                    <td>{{ "%02d"|format(item.num_parcela) }}/{{ "%02d"|format(item.total_parcelas) }}
+                                    </td>
+                                    <td>{{ item.vencimento }}</td>
+                                    <td>{{ item.valor_fixo_formatado }}</td>
+                                    <td>{{ item.acrescimos_formatado }}</td>
+                                    <td class="{% if item.status == 'Atrasado' %}fw-bold{% endif %}">{{
+                                        item.valor_atualizado_formatado }}</td>
+                                    <td class="text-center">
+                                        {% if item.status == 'Pago' %}
+                                        <span class="badge" style="background-color: #2ECC71; color: white;">Pago</span>
+                                        {% elif item.status == 'Atrasado' %}
+                                        <span class="badge"
+                                            style="background-color: #e74c3c; color: white;">Vencido</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">{{ item.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="form-button-action">
+                                            <!-- Botão de Download: Adicionamos uma classe para o JavaScript -->
+                                            <button type="button" class="btn btn-link btn-primary btn-baixar-boleto"
+                                                title="Baixar Boleto Atualizado">
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                            <!-- Botão de Cálculo: Adicionamos os atributos 'data-*' para passar os dados para o modal -->
+                                            <button type="button" class="btn btn-link btn-info btn-ver-calculo"
+                                                title="Ver Detalhes do Cálculo" data-bs-toggle="modal"
+                                                data-bs-target="#detalhesCalculoModal"
+                                                data-parcela-num="{{ '%02d'|format(item.num_parcela) }}/{{ '%02d'|format(item.total_parcelas) }}"
+                                                data-valor-fixo="{{ item.valor_fixo_formatado }}"
+                                                data-valor-atualizado="{{ item.valor_atualizado_formatado }}"
+                                                data-detalhes='{{ item.detalhes_calculo | tojson | safe }}'>
+                                                <i class="fa fa-calculator"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Rodapé Informativo -->
+                <div class="card-footer text-center text-muted" style="font-size: 0.8rem;">
+                    <p class="mb-0">Cálculos baseados em Multa de 2% e Juros de Mora de 0,33% ao dia, conforme contrato.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Cálculo (NOVO) -->
+    <div class="modal fade" id="detalhesCalculoModal" tabindex="-1" aria-labelledby="detalhesCalculoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesCalculoModalLabel">Detalhes do Cálculo de Acréscimos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Parcela: <strong id="modal-parcela-num"></strong></p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Valor Fixo da Parcela
+                            <span id="modal-valor-fixo" class="fw-bold"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Multa por Atraso (2%)
+                            <span id="modal-multa" class="text-danger"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Juros de Mora (<span id="modal-dias-atraso"></span> dias)
+                            <span id="modal-juros" class="text-danger"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center fw-bold bg-light">
+                            Total Atualizado
+                            <span id="modal-valor-atualizado"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock conteudo %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // A tabela do gerente agora usa o ID sincronizado com o CSS
+        var tableGerente = $("#historicoPagamentosTable").DataTable({
+            "ordering": false,
+            "pageLength": 5,
+            "lengthChange": false,
+            "dom": 'rt<"d-flex justify-content-between pt-2"ip>',
+            "language": {
+                "zeroRecords": "Nenhum registro encontrado",
+                "info": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Próximo"
+                }
+            }
+        });
+
+        $('#filtro-historico').on('keyup', function () {
+            tableGerente.search($(this).val()).draw();
+        });
+
+        // A nova tabela do cliente usa 'tabela-meus-pagamentos'
+        var tableCliente = $("#tabela-meus-pagamentos").DataTable({
+            "ordering": false,
+            "paging": false, // Remove a paginação (Anterior, 1, Próximo)
+            "lengthChange": false,
+            "searching": false, // O cliente não precisa de busca aqui
+            "info": false, // Remove o texto "Mostrando X de Y registros"
+            "language": {
+                "zeroRecords": "Nenhum registro encontrado"
+            }
+        });
+
+        // NOVO: Ação do botão "Baixar Boleto" (simulação com notificação)
+        // Usamos a delegação de eventos do jQuery para garantir que funcione mesmo com a paginação da tabela.
+        $('#tabela-meus-pagamentos').on('click', '.btn-baixar-boleto', function () {
+            // A função '$.notify' já vem com o template e é usada em outras partes do sistema.
+            $.notify({
+                icon: 'fa fa-check',
+                title: 'Download Iniciado',
+                message: 'O download do seu boleto foi iniciado.',
+            }, {
+                type: 'success', // Define a cor da notificação (verde)
+                placement: {
+                    from: "top",
+                    align: "right"
+                },
+                time: 1000, // Tempo que a notificação fica visível
+            });
+        });
+
+        // NOVO: Lógica para o Modal de Detalhes do Cálculo
+        const detalhesModal = document.getElementById('detalhesCalculoModal');
+        if (detalhesModal) {
+            // 1. Ouve o evento de quando o modal está prestes a ser mostrado
+            detalhesModal.addEventListener('show.bs.modal', function (event) {
+                // 2. Pega o botão que acionou o modal
+                const button = event.relatedTarget;
+
+                // 3. Extrai as informações dos atributos 'data-*' do botão
+                const parcelaNum = button.getAttribute('data-parcela-num');
+                const valorFixo = button.getAttribute('data-valor-fixo');
+                const valorAtualizado = button.getAttribute('data-valor-atualizado');
+                // Converte a string JSON de volta para um objeto JavaScript
+                const detalhes = JSON.parse(button.getAttribute('data-detalhes'));
+
+                // 4. Pega os elementos dentro do modal para preencher com os dados
+                const modalParcelaNum = detalhesModal.querySelector('#modal-parcela-num');
+                const modalValorFixo = detalhesModal.querySelector('#modal-valor-fixo');
+                const modalMulta = detalhesModal.querySelector('#modal-multa');
+                const modalDiasAtraso = detalhesModal.querySelector('#modal-dias-atraso');
+                const modalJuros = detalhesModal.querySelector('#modal-juros');
+                const modalValorAtualizado = detalhesModal.querySelector('#modal-valor-atualizado');
+
+                // 5. Preenche o modal com os dados da parcela clicada
+                modalParcelaNum.textContent = parcelaNum;
+                modalValorFixo.textContent = valorFixo;
+                modalValorAtualizado.textContent = valorAtualizado;
+
+                // Se houver detalhes de cálculo (parcela atrasada), preenche os campos
+                if (detalhes && detalhes.dias_atraso) {
+                    modalMulta.textContent = detalhes.multa;
+                    modalDiasAtraso.textContent = detalhes.dias_atraso;
+                    modalJuros.textContent = detalhes.juros;
+                } else {
+                    // Se não estiver atrasada, mostra R$ 0,00
+                    modalMulta.textContent = 'R$ 0,00';
+                    modalDiasAtraso.textContent = '0';
+                    modalJuros.textContent = 'R$ 0,00';
+                }
+            });
+        }
+    });
+</script>
+{% endblock scripts %}
