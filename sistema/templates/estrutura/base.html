@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>SysEmpréstimos </title>
+  <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+  <link rel="icon" href="{{ url_for('static', filename='images/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+
+  <!-- Fonts and icons -->
+  <script src="{{ url_for('static', filename='js/plugin/webfont/webfont.min.js') }}"></script>
+  <script>
+    WebFont.load({
+      google: { families: ["Public Sans:300,400,500,600,700"] },
+      custom: {
+        families: [
+          "Font Awesome 5 Solid",
+          "Font Awesome 5 Regular",
+          "Font Awesome 5 Brands",
+          "simple-line-icons",
+        ],
+        urls: ["{{ url_for('static', filename='css/fonts.min.css') }}"],
+      },
+      active: function () {
+        sessionStorage.fonts = true;
+      },
+    });
+  </script>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins.min.css' ) }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/kaiadmin.min.css') }}" />
+
+  <!-- CSS Customizado (NOVO) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom_styles.css') }}" />
+
+</head>
+
+<body>
+  <div class="wrapper">
+
+    {% include 'estrutura/sidebar.html' %}
+
+    <div class="main-panel">
+
+      {% include 'estrutura/header.html' %}
+
+      <div class="container">
+
+        {% block conteudo %}
+
+        {% endblock conteudo %}
+      </div>
+
+      {% include 'estrutura/footer.html' %}
+    </div>
+
+
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{{ url_for('static', filename='js/utilitarios.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/core/jquery-3.7.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
+
+  <!-- jQuery Scrollbar -->
+  <script src="{{ url_for('static', filename='js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+
+  <!-- Chart JS -->
+  <script src="{{ url_for('static', filename='js/plugin/chart.js/chart.min.js') }}"></script>
+
+  <!-- jQuery Sparkline -->
+  <script src="{{ url_for('static', filename='js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
+
+  <!-- Chart Circle -->
+  <script src="{{ url_for('static', filename='js/plugin/chart-circle/circles.min.js') }}"></script>
+
+  <!-- Datatables -->
+  <script src="{{ url_for('static', filename='js/plugin/datatables/datatables.min.js') }}"></script>
+
+  <!-- Bootstrap Notify -->
+  <script src="{{ url_for('static', filename='js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
+
+  <!-- jQuery Vector Maps -->
+  <script src="{{ url_for('static', filename='js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/plugin/jsvectormap/world.js') }}"></script>
+
+  <!-- Sweet Alert -->
+  <script src="{{ url_for('static', filename='js/plugin/sweetalert/sweetalert.min.js') }}"></script>
+
+  <!-- Kaiadmin JS -->
+  <script src="{{ url_for('static', filename='js/kaiadmin.min.js') }}"></script>
+
+  <!-- Exibição de Mensagens Flash (Notificações) -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  {% block scripts %}
+  {% endblock %}
+
+  <!-- Script para ativar o item do menu lateral correspondente à página atual -->
+  <!-- Esta é uma versão em "JavaScript Puro" (Vanilla JS), que não depende da biblioteca jQuery. -->
+  <script>
+    // Executa o script quando todo o conteúdo da página for carregado.
+    document.addEventListener('DOMContentLoaded', function () {
+      // 1. Pega o caminho da URL atual (ex: "/clientes", "/historico-pagamentos").
+      const caminhoAtual = window.location.pathname;
+
+      // 2. Seleciona todos os links <a> que estão dentro do menu lateral.
+      const todosOsLinks = document.querySelectorAll('.sidebar .nav a');
+
+      // 3. Percorre cada um dos links encontrados.
+      todosOsLinks.forEach(function (link) {
+        // Pega o endereço (href) de cada link.
+        const hrefDoLink = link.getAttribute('href');
+
+        // 4. Compara o endereço do link com o caminho da URL atual.
+        if (caminhoAtual === hrefDoLink) {
+
+          // 5. Verifica se o link está dentro de um submenu.
+          // O 'closest' procura o "pai" mais próximo com a classe '.nav-collapse'.
+          const submenuPai = link.closest('.nav-collapse');
+
+          if (submenuPai) {
+            // Se estiver em um submenu, ativa o item do submenu, o menu principal e expande a lista.
+            link.parentElement.classList.add('active'); // Ativa o <li> do submenu
+            link.closest('.collapse').classList.add('show'); // Expande o <div> do submenu
+            link.closest('.nav-item').classList.add('active'); // Ativa o <li> principal
+          } else {
+            // Se for um link principal, apenas ativa o <li> dele.
+            link.parentElement.classList.add('active');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

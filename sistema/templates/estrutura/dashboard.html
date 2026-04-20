@@ -1,0 +1,511 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+
+<!-- ================================================== -->
+<!--      PAINEL DE CONTROLE - VISÃO DO GERENTE         -->
+<!-- ================================================== -->
+<div class="page-inner">
+  <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+      <h3 class="fw-bold mb-3">Visão Geral</h3>
+      <h6 class="op-7 mb-2">Gestão de Liquidez e Rentabilidade Real</h6>
+    </div>
+  </div>
+  <!-- Cards de Resumo -->
+  <div class="row">
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-primary bubble-shadow-small"><i class="fas fa-hand-holding-usd"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Total Emprestado</p>
+                <h4 class="card-title">{{ dados_dashboard.resumo.total_emprestado }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-success bubble-shadow-small"><i class="fas fa-coins"></i></div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Recebimentos Mês</p>
+                <h4 class="card-title" id="val-recebimentos">{{ dados_dashboard.resumo.recebimentos_mes }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-info bubble-shadow-small"><i class="fas fa-wallet"></i></div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Disponibilidade Caixa</p>
+                <h4 class="card-title">{{ dados_dashboard.resumo.disponibilidade_caixa }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-danger bubble-shadow-small"><i
+                  class="fas fa-exclamation-triangle"></i></div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Taxa de Atraso</p>
+                <h4 class="card-title" id="val-taxa-atraso">{{ dados_dashboard.resumo.taxa_atraso }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Lista de Ações Urgentes -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-round">
+        <div class="card-header card-header-gerente">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Ações Urgentes - Top 5 Atrasos</div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table align-items-center mb-0">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Cliente</th>
+                  <th scope="col" class="text-end">Dias em Atraso</th>
+                  <th scope="col" class="text-end">Valor Vencido</th>
+                  <th scope="col" class="text-end">Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Carlos Pereira</th>
+                  <td class="text-end text-danger fw-bold">60 dias</td>
+                  <td class="text-end">R$ 20.000,00</td>
+                  <td class="text-end">
+                    <a href="https://wa.me/5511999999999?text=Olá Carlos, notamos que a sua parcela está em atraso. Como podemos ajudar?"
+                      target="_blank" class="btn btn-sm btn-success">
+                      <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Gráficos e Indicadores -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-round">
+        <div class="card-header card-header-gerente">
+          <div class="card-head-row">
+            <div class="card-title">Previsão de Entradas (Próximos 90 dias)</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 350px"><canvas id="chartPrevisaoEntradas"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card card-round">
+        <div class="card-header card-header-gerente">
+          <div class="card-head-row">
+            <div class="card-title">Situação de Pagamentos</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 200px"><canvas id="doughnutChart"></canvas></div>
+          <div class="mt-4">
+            <div class="d-flex justify-content-between mb-1"><span class="indicador-label">Índice de
+                Reinvestimento</span><span class="fw-bold text-reinvestimento">85%</span></div>
+            <div class="progress mb-3" style="height: 6px;">
+              <div class="progress-bar bg-reinvestimento" role="progressbar" style="width: 85%" aria-valuenow="85"
+                aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="d-flex justify-content-between mb-1"><span class="indicador-label">Capital em Risco
+                (VaR)</span><span class="fw-bold text-danger">R$ 20.000,00</span></div>
+            <div class="progress mb-2" style="height: 6px;">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10"
+                aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-round">
+        <div class="card-header card-header-gerente">
+          <div class="card-head-row">
+            <div class="card-title">Lucro Bruto vs Líquido</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 303px"><canvas id="barChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Gráfico Comparativo (Gerente) -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-round">
+        <div class="card-header card-header-gerente">
+          <div class="card-head-row">
+            <div class="card-title">Comparativo: Emprestado vs Recebido</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 350px"><canvas
+              id="comparativoEmprestimoRecebidoChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock conteudo %}
+
+{% block scripts %}
+
+<!-- Este bloco de script só será executado se o perfil for 'gerente' -->
+<script>
+  // Para evitar conflitos, pegamos todos os dados do gerente para uma variável com nome único.
+  const dadosGerente = JSON.parse('{{ dados_dashboard | tojson | safe }}');
+  // Pega a cor do texto do CSS (preto no claro, branco off-white no escuro)
+  const corTexto = pegarCorDoCSS('--cor-grafico-texto') || '#333';
+  // Pega a cor das linhas de grade do CSS
+  const corGrid = pegarCorDoCSS('--cor-grafico-grid') || 'rgba(0,0,0,0.1)';
+
+  // Configuração Global para garantir que legendas e textos de todos os gráficos fiquem em Off-White
+  Chart.defaults.global.defaultFontColor = corTexto;
+  Chart.defaults.global.legend.labels.fontColor = corTexto;
+
+  // --- Gráfico de Previsão de Entradas (Line Chart) ---
+  const previsaoData = dadosGerente.previsao_chart;
+  var ctx = document.getElementById('chartPrevisaoEntradas').getContext('2d');
+
+  // 1. Criar o preenchimento em degradê
+  var gradient = ctx.createLinearGradient(0, 0, 0, 350);
+  gradient.addColorStop(0, pegarCorDoCSS('--cor-gerente-previsao-fundo-inicio'));
+  gradient.addColorStop(1, pegarCorDoCSS('--cor-gerente-previsao-fundo-fim'));
+
+  // 2. Encontrar o ponto de pico para destacar
+  const dataPoints = previsaoData.datasets[0].data;
+  const maxValue = Math.max(...dataPoints);
+  const maxIndex = dataPoints.indexOf(maxValue);
+
+  // 3. Definir estilos para cada ponto (destacando o pico)
+  const pointRadii = dataPoints.map((value, index) => index === maxIndex ? 6 : 0);
+  const pointBackgrounds = dataPoints.map((value, index) => index === maxIndex ? pegarCorDoCSS('--cor-gerente-previsao-ponto-fundo') : 'transparent');
+  const pointBorders = dataPoints.map((value, index) => index === maxIndex ? pegarCorDoCSS('--cor-gerente-previsao-ponto-borda') : 'transparent');
+
+  // 4. Aplicar todos os estilos ao gráfico
+  previsaoData.datasets[0].borderColor = pegarCorDoCSS('--cor-gerente-previsao-linha');
+  previsaoData.datasets[0].backgroundColor = gradient;
+  previsaoData.datasets[0].pointBackgroundColor = pointBackgrounds;
+  previsaoData.datasets[0].pointBorderColor = pointBorders;
+  previsaoData.datasets[0].pointRadius = pointRadii;
+  previsaoData.datasets[0].pointHoverRadius = 7;
+  previsaoData.datasets[0].pointBorderWidth = 2;
+  previsaoData.datasets[0].fill = true;
+  previsaoData.datasets[0].borderWidth = 2;
+
+  var chartPrevisaoEntradas = new Chart(ctx, {
+    type: 'line',
+    data: previsaoData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        bodySpacing: 4,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest",
+        xPadding: 10,
+        yPadding: 10,
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, data) {
+            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            // Formata o valor para moeda brasileira, sem os centavos.
+            return new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+              minimumFractionDigits: 0
+            }).format(value);
+          }
+        }
+      },
+      layout: {
+        padding: { left: 5, right: 5, top: 15, bottom: 15 }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: corTexto,
+            fontStyle: "500",
+            padding: 10,
+            callback: function (value, index, values) {
+              // Formata o valor para moeda brasileira, sem os centavos.
+              return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 0
+              }).format(value);
+            }
+          },
+          gridLines: {
+            display: true,
+            color: corGrid,
+            zeroLineColor: corGrid,
+            drawTicks: false
+          }
+        }],
+        xAxes: [{
+          gridLines: {
+            color: corGrid,
+            zeroLineColor: corGrid
+          },
+          ticks: {
+            fontColor: corTexto,
+            padding: 10,
+            fontStyle: "500"
+          }
+        }]
+      },
+    }
+  });
+
+  // Gráfico de Rosca (Situação de Pagamentos)
+  const situacaoData = dadosGerente.situacao_chart;
+  // Definindo as 3 cores da rosca
+  situacaoData.datasets[0].backgroundColor = [
+    pegarCorDoCSS('--cor-gerente-situacao-em-dia'),
+    pegarCorDoCSS('--cor-gerente-situacao-atrasado'),
+    pegarCorDoCSS('--cor-gerente-situacao-quitado')
+  ];
+  situacaoData.datasets[0].borderColor = [
+    pegarCorDoCSS('--cor-gerente-situacao-em-dia-borda'),
+    pegarCorDoCSS('--cor-gerente-situacao-atrasado-borda'),
+    pegarCorDoCSS('--cor-gerente-situacao-quitado-borda')
+  ];
+  situacaoData.datasets[0].borderWidth = 2;
+
+  var doughnutChart = document.getElementById('doughnutChart').getContext('2d');
+  var myDoughnutChart = new Chart(doughnutChart, {
+    type: 'doughnut',
+    data: situacaoData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'bottom',
+        labels: {
+          fontColor: corTexto
+        }
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+          }
+        }
+      },
+      layout: {
+        padding: {
+          left: 20, right: 20, top: 20, bottom: 20
+        }
+      }
+    }
+  });
+
+  // Gráfico de Barras (Lucro Bruto vs Líquido)
+  const lucroData = dadosGerente.lucro_chart;
+  // Definindo as cores das barras
+  lucroData.datasets[0].backgroundColor = pegarCorDoCSS('--cor-gerente-lucro-bruto');
+  lucroData.datasets[0].borderColor = pegarCorDoCSS('--cor-gerente-lucro-bruto-borda');
+  lucroData.datasets[0].borderWidth = 2;
+
+  lucroData.datasets[1].backgroundColor = pegarCorDoCSS('--cor-gerente-lucro-liquido');
+  lucroData.datasets[1].borderColor = pegarCorDoCSS('--cor-gerente-lucro-liquido-borda');
+  lucroData.datasets[1].borderWidth = 2;
+
+  var barChart = document.getElementById('barChart').getContext('2d');
+  var myBarChart = new Chart(barChart, {
+    type: 'bar',
+    data: lucroData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'bottom',
+        labels: {
+          fontColor: corTexto
+        }
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            var label = data.datasets[tooltipItem.datasetIndex].label || '';
+            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            return label + ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+          }
+        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: corTexto,
+            beginAtZero: true,
+            callback: function (value) {
+              return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 }).format(value);
+            }
+          },
+          gridLines: {
+            display: true,
+            color: corGrid,
+            zeroLineColor: corGrid,
+            drawTicks: false
+          }
+        }],
+        xAxes: [{
+          ticks: {
+            fontColor: corTexto
+          },
+          gridLines: {
+            display: true,
+            color: corGrid,
+            zeroLineColor: corGrid,
+            drawTicks: false
+          }
+        }]
+      },
+    }
+  });
+
+  // Ação do botão Cobrar (Notificação)
+  $(document).on('click', '.btn-cobrar', function () {
+    $.notify({
+      icon: 'fa fa-bell',
+      title: 'Cobrança Enviada',
+      message: 'Mensagem enviada ao cliente cobrando o pagamento.',
+    }, {
+      type: 'success',
+      placement: {
+        from: "top",
+        align: "right"
+      },
+      time: 1000,
+      delay: 3000,
+    });
+  });
+
+  // Gráfico de Comparativo Emprestimo vs Recebido
+  if (document.getElementById('comparativoEmprestimoRecebidoChart')) {
+    const comparativoCtx = document.getElementById('comparativoEmprestimoRecebidoChart').getContext('2d');
+    const comparativoData = dadosGerente.comparativo_chart;
+
+    // Configurando "Valor Emprestado"
+    comparativoData.datasets[0].backgroundColor = pegarCorDoCSS('--cor-gerente-comparativo-emprestado');
+    comparativoData.datasets[0].borderColor = pegarCorDoCSS('--cor-gerente-comparativo-emprestado-borda');
+    comparativoData.datasets[0].borderWidth = 2; // Borda mais marcada
+
+    // Configurando "Valor Recebido"
+    comparativoData.datasets[1].backgroundColor = pegarCorDoCSS('--cor-gerente-comparativo-recebido');
+    comparativoData.datasets[1].borderColor = pegarCorDoCSS('--cor-gerente-comparativo-recebido-borda');
+    comparativoData.datasets[1].borderWidth = 2; // Borda mais marcada
+
+    new Chart(comparativoCtx, {
+      type: 'bar',
+      data: comparativoData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: 'bottom',
+          labels: {
+            fontColor: corTexto
+          }
+        },
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var label = data.datasets[tooltipItem.datasetIndex].label || '';
+              var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+              // Formata para moeda sem os centavos
+              return label + ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 }).format(value);
+            }
+          }
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              fontColor: corTexto,
+              beginAtZero: true,
+              callback: function (value) {
+                // Formata o eixo vertical para moeda sem os centavos
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 }).format(value);
+              }
+            },
+            gridLines: {
+              display: true,
+              color: corGrid,
+              zeroLineColor: corGrid,
+              drawTicks: false
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              fontColor: corTexto,
+              fontStyle: "500"
+            },
+            gridLines: {
+              display: true,
+              color: corGrid,
+              zeroLineColor: corGrid,
+              drawTicks: false
+            }
+          }]
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}

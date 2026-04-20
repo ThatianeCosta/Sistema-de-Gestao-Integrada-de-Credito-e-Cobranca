@@ -1,0 +1,110 @@
+<!-- Sidebar -->
+<!-- A classe 'bg-theme-primary' vem do nosso novo arquivo CSS -->
+<div class="sidebar bg-theme-primary">
+
+  <div class="sidebar-logo">
+    <!-- Logo Header -->
+    <div class="logo-header bg-theme-primary">
+      <a href="#" class="logo">
+        <img src="{{ url_for('static', filename='images/kaiadmin/logo_light.svg') }}" alt="navbar brand"
+          class="navbar-brand" height="20" />
+      </a>
+      <div class="nav-toggle">
+        <button class="btn btn-toggle toggle-sidebar">
+          <i class="gg-menu-right"></i>
+        </button>
+        <button class="btn btn-toggle sidenav-toggler">
+          <i class="gg-menu-left"></i>
+        </button>
+      </div>
+      <button class="topbar-toggler more">
+        <i class="gg-more-vertical-alt"></i>
+      </button>
+    </div>
+    <!-- End Logo Header -->
+  </div>
+
+  <div class="sidebar-wrapper scrollbar scrollbar-inner">
+    <div class="sidebar-content">
+      <ul class="nav nav-secondary">
+
+        <li class="nav-item">
+          <a href="{{ url_for('principal') }}">
+            <i class="fas fa-home"></i>
+            <p>Painel de Controle</p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ url_for('fluxo_caixa') }}">
+            <i class="fas fa-university"></i>
+            <!-- Para o cliente, chamamos de Extrato Financeiro -->
+            <p>{% if session['perfil'] == 'cliente' %}Extrato Financeiro{% else %}Fluxo de Caixa{% endif %}</p>
+          </a>
+        </li>
+
+        <!-- Menu Clientes: Só o Gerente vê -->
+        {% if session['perfil'] == 'gerente' %}
+        <li class="nav-item">
+          <a href="{{ url_for('clientes_listar') }}">
+            <i class="fas fa-users"></i>
+            <p>Clientes</p>
+          </a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item">
+          <a href="{{ url_for('relatorios') }}">
+            <!-- Para o cliente, o ícone muda para passar a ideia de Score/Crédito -->
+            <i class="{% if session['perfil'] == 'cliente' %}fas fa-chart-line{% else %}fas fa-file{% endif %}"></i>
+            <!-- Para o cliente, chamamos de Meu Limite e Score -->
+            <p>{% if session['perfil'] == 'cliente' %}Meu Limite e Score{% else %}Relatórios{% endif %}</p>
+          </a>
+        </li>
+
+        <!-- Gestão do Sistema (Gerente) vs Meus Pagamentos (Cliente) -->
+        {% if session['perfil'] == 'gerente' %}
+        <li class="nav-item">
+          <a data-bs-toggle="collapse" href="#gestaoSistema">
+            <i class="fas fa-cogs"></i>
+            <p>Gestão do Sistema</p>
+            <span class="caret"></span>
+          </a>
+          <div class="collapse" id="gestaoSistema">
+            <ul class="nav nav-collapse">
+
+              <li>
+                <a href="{{ url_for('historico_pagamentos') }}">
+                  <span class="sub-item">Histórico de Pagamentos</span>
+                </a>
+              </li>
+
+              <li>
+                <a href="{{ url_for('usuarios_listar') }}">
+                  <span class="sub-item">Usuários</span>
+                </a>
+              </li>
+
+              <li>
+                <a href="{{ url_for('taxas') }}">
+                  <span class="sub-item">Taxas</span>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </li>
+        {% else %}
+        <!-- Para o Cliente, simplificamos: Link direto para o histórico com nome amigável -->
+        <li class="nav-item">
+          <a href="{{ url_for('historico_pagamentos') }}">
+            <i class="fas fa-history"></i>
+            <p>Meus Pagamentos</p>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- End Sidebar -->

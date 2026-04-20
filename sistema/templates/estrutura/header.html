@@ -1,0 +1,512 @@
+<div class="main-header">
+  <div class="main-header-logo">
+    <!-- Logo Header -->
+    <div class="logo-header bg-theme-primary">
+      <a href="#" class="logo">
+        <img src="{{ url_for('static', filename='images/kaiadmin/logo_light.svg') }}" alt="navbar brand"
+          class="navbar-brand" height="20" />
+      </a>
+      <div class="nav-toggle">
+        <button class="btn btn-toggle toggle-sidebar">
+          <i class="gg-menu-right"></i>
+        </button>
+        <button class="btn btn-toggle sidenav-toggler">
+          <i class="gg-menu-left"></i>
+        </button>
+      </div>
+      <button class="topbar-toggler more">
+        <i class="gg-more-vertical-alt"></i>
+      </button>
+    </div>
+    <!-- End Logo Header -->
+  </div>
+  <!-- Navbar Header -->
+  <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+    <div class="container-fluid">
+      <form class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
+        action="{{ url_for('relatorios') }}" method="GET">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <button type="submit" class="btn btn-search pe-1">
+              <i class="fa fa-search search-icon"></i>
+            </button>
+          </div>
+          <input type="text" id="campoBuscaDesktop" name="q" placeholder="Pesquisar..." class="form-control" autocomplete="off" oninput="minhaBusca('campoBuscaDesktop', 'listaDesktop')" />
+          <div id="listaDesktop" class="search-results-container shadow"></div>
+        </div>
+      </form>
+
+      <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+
+        <!-- Botão de Alternar Tema (Modo Escuro/Claro) -->
+        <li class="nav-item me-2">
+          <button class="btn btn-link nav-link" type="button" onclick="alternarTema()"
+            title="Mudar o visual (Claro/Escuro)">
+            <i class="fas fa-moon" id="icone-tema" style="font-size: 1.2rem; color: #575962;"></i>
+          </button>
+        </li>
+
+        <!-- Pesquisa -->
+        <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"
+            aria-haspopup="true">
+            <i class="fa fa-search"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-search animated fadeIn">
+            <form class="navbar-left navbar-form nav-search" action="{{ url_for('relatorios') }}" method="GET">
+              <div class="input-group">
+                <input type="text" id="campoBuscaMobile" name="q" placeholder="Pesquisar..." class="form-control" autocomplete="off" oninput="minhaBusca('campoBuscaMobile', 'listaMobile')" />
+                <div id="listaMobile" class="search-results-container shadow"></div>
+              </div>
+            </form>
+          </ul>
+        </li>
+
+        <!--Mensagens -->
+        <li class="nav-item topbar-icon dropdown hidden-caret">
+          <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-envelope"></i>
+          </a>
+          <ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
+            <li>
+              <div class="dropdown-title d-flex justify-content-between align-items-center">
+                Mensagens
+                <!-- Só mostra a opção de marcar como lida se for Gerente -->
+                {% if session['perfil'] == 'gerente' %}
+                <a href="#" class="small">Marcar como Lidas</a>
+                {% endif %}
+              </div>
+            </li>
+            <li>
+              <div class="message-notif-scroll scrollbar-outer">
+                <div class="notif-center">
+
+                  <!-- VERIFICAÇÃO: Se for Gerente, mostra as mensagens simuladas -->
+                  {% if session['perfil'] == 'gerente' %}
+                  <a data-bs-toggle="collapse" href="#chat-joao-rocha" role="button" aria-expanded="false"
+                    aria-controls="chat-joao-rocha" style="text-decoration: none; cursor: pointer;">
+                    <div class="notif-img">
+                      <img src="{{ url_for('static', filename='images/JoaoRocha.jpg' ) }}" alt="Img Profile" />
+                    </div>
+                    <div class="notif-content">
+                      <span class="subject">João Rocha - Cliente</span>
+                      <span class="block">Olá tudo bem?</span>
+                      <span class="time">5 minutos atrás</span>
+                    </div>
+                  </a>
+                  <!-- Janela de Chat (Collapse) -->
+                  <div class="collapse p-3 bg-light border-bottom" id="chat-joao-rocha">
+                    <div class="card-body-chat">
+                      <div class="input-group">
+                        <input type="text" placeholder="Responder para João..." class="form-control form-control-sm">
+                        <!-- Ao clicar, exibe a notificação 'Mensagem Enviada' e fecha a janelinha de resposta -->
+                        <button class="btn btn-primary btn-sm"
+                          onclick="notificarSucesso('Mensagem Enviada', 'Sua resposta foi enviada com sucesso.');"
+                          data-bs-toggle="collapse" data-bs-target="#chat-joao-rocha">
+                          <i class="fa fa-paper-plane"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SE NÃO FOR GERENTE (ou seja, é Cliente), mostra aviso vazio -->
+                  {% else %}
+                  <div style="padding: 20px; text-align: center; color: gray;">
+                    <i class="fa fa-check-circle" style="font-size: 20px; margin-bottom: 10px;"></i>
+                    <br>
+                    <span style="font-weight: 600;">Não há novas mensagens.</span>
+                    <div style="font-size: 12px; margin-top: 5px;">
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal" style="color: inherit; text-decoration: none;">Clique para falar com o gerente</a>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+            </li>
+            <!-- Só mostra o botão "Ver todas" se for Gerente -->
+            {% if session['perfil'] == 'gerente' %}
+            <li>
+              <a class="see-all" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#allMessagesModal">
+                Visualizar todas<i class="fa fa-angle-right"></i>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </li>
+
+        <!--Notificações -->
+        <li class="nav-item topbar-icon dropdown hidden-caret">
+          <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-bell"></i>
+            <!-- Só mostra o número '3' vermelho se for Gerente -->
+            {% if session['perfil'] == 'gerente' %}
+            <span class="notification">3</span>
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+            <li>
+              <div class="dropdown-title">
+                {% if session['perfil'] == 'gerente' %}
+                Você tem 3 notificações
+                {% else %}
+                Não há novas notificações
+                {% endif %}
+              </div>
+            </li>
+            <li>
+              <div class="notif-scroll scrollbar-outer">
+                <div class="notif-center">
+                  <!-- Se for Gerente, mostra a notificação de pagamento -->
+                  {% if session['perfil'] == 'gerente' %}
+                  <a href="#">
+                    <div class="notif-icon notif-primary">
+                      <i class="fa fa-money-bill-wave"></i>
+                    </div>
+                    <div class="notif-content">
+                      <span class="block"> Novo pagamento recebido </span>
+                      <span class="time">7 minutos atrás</span>
+                    </div>
+                  </a>
+                  {% else %}
+                  <!-- Se for Cliente, mostra vazio -->
+                  <div style="padding: 20px; text-align: center; color: gray;">
+                    <i class="fa fa-bell-slash" style="font-size: 20px; margin-bottom: 10px;"></i>
+                    <br>
+                    Nenhuma notificação pendente.
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+            </li>
+            {% if session['perfil'] == 'gerente' %}
+            <li>
+              <a class="see-all" href="javascript:void(0);" data-bs-toggle="modal"
+                data-bs-target="#allNotificationsModal">
+                Visualizar todas<i class="fa fa-angle-right"></i>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </li>
+
+        <!-- Aréa Usuário -->
+        <li class="nav-item topbar-user dropdown hidden-caret">
+          <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+            <div class="avatar-sm">
+              <!-- A foto agora vem da sessão, que foi definida no login -->
+              <img src="{{ url_for('static', filename='images/' + session.get('foto', 'default_avatar.jpg')) }}"
+                alt="..." class="avatar-img rounded-circle" />
+            </div>
+            <!-- O nome do usuário também vem da sessão -->
+            {% set nomes = session.get('usuario_logado', 'Usuário').split(' ', 1) %}
+            <span class="profile-username">
+              <span class="op-7">{{ nomes[0] }}</span>
+              <span class="fw-bold">{{ nomes[1] if nomes|length > 1 else '' }}</span>
+            </span>
+          </a>
+          <ul class="dropdown-menu dropdown-user animated fadeIn">
+            <div class="dropdown-user-scroll scrollbar-outer">
+              <li>
+                <div class="user-box">
+                  <div class="avatar-lg">
+                    <!-- A foto grande também é dinâmica -->
+                    <img src="{{ url_for('static', filename='images/' + session.get('foto', 'default_avatar.jpg')) }}"
+                      alt="image profile" class="avatar-img rounded" />
+                  </div>
+                  <div class="u-text">
+                    <!-- Nome e email dinâmicos no menu dropdown -->
+                    <h4>{{ session.get('usuario_logado', 'Usuário Desconhecido') }}</h4>
+                    <p class="text-muted">{{ session.get('email', 'email@desconhecido.com') }}</p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ url_for('minha_conta') }}">Minha Conta</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ url_for('sair') }}">Sair</a>
+              </li>
+            </div>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- End Navbar -->
+</div>
+
+<!-- Modal de Todas as Mensagens -->
+<div class="modal fade" id="allMessagesModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Mensagens Anteriores</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="list-group list-group-flush">
+          <!-- Mensagem Carlos Pereira -->
+          <a data-bs-toggle="collapse" href="#reply-carlos" class="list-group-item list-group-item-action">
+            <div class="d-flex align-items-center">
+              <div class="avatar-sm me-3">
+                <img src="{{ url_for('static', filename='images/man-CarlosPereira.jpg') }}" alt="Carlos Pereira"
+                  class="avatar-img rounded-circle">
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1 fw-bold">Carlos Pereira</h6>
+                  <small class="text-muted">2 horas atrás</small>
+                </div>
+                <p class="mb-1 text-muted small">Olá, tive um imprevisto e vou atrasar o pagamento da parcela em alguns
+                  dias. Tem algum problema?</p>
+              </div>
+            </div>
+          </a>
+          <div class="collapse p-2 bg-light" id="reply-carlos">
+            <div class="input-group">
+              <input type="text" placeholder="Responder para Carlos..." class="form-control form-control-sm">
+              <button class="btn btn-primary btn-sm"
+                onclick="notificarSucesso('Sucesso', 'Resposta enviada para Carlos.');" data-bs-toggle="collapse"
+                data-bs-target="#reply-carlos">
+                <i class="fa fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mensagem Aline Ferreira -->
+          <a data-bs-toggle="collapse" href="#reply-aline" class="list-group-item list-group-item-action">
+            <div class="d-flex align-items-center">
+              <div class="avatar-sm me-3">
+                <img src="{{ url_for('static', filename='images/portrait-woman-AlineFerreira.jpg') }}"
+                  alt="Aline Ferreira" class="avatar-img rounded-circle">
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1 fw-bold">Aline Ferreira</h6>
+                  <small class="text-muted">1 dia atrás</small>
+                </div>
+                <p class="mb-1 text-muted small">Bom dia! Gostaria de consultar o meu saldo devedor atualizado para
+                  quitação total.</p>
+              </div>
+            </div>
+          </a>
+          <div class="collapse p-2 bg-light" id="reply-aline">
+            <div class="input-group">
+              <input type="text" placeholder="Responder para Aline..." class="form-control form-control-sm">
+              <button class="btn btn-primary btn-sm"
+                onclick="notificarSucesso('Sucesso', 'Resposta enviada para Aline.');" data-bs-toggle="collapse"
+                data-bs-target="#reply-aline">
+                <i class="fa fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // JEITO INICIANTE: Criamos uma lista simples com as páginas e links
+  var perfilDoUsuario = "{{ session.get('perfil') }}";
+  var listaDePaginas = [
+    { "nome": perfilDoUsuario == "gerente" ? "Painel de Controle" : "Meu Painel", "link": "{{ url_for('principal') }}", "icone": "fas fa-home" },
+    { "nome": perfilDoUsuario == "gerente" ? "Fluxo de Caixa" : "Extrato Financeiro", "link": "{{ url_for('fluxo_caixa') }}", "icone": "fas fa-university" },
+    { "nome": perfilDoUsuario == "gerente" ? "Relatórios" : "Meu Limite e Score", "link": "{{ url_for('relatorios') }}", "icone": "fas fa-chart-line" },
+    { "nome": "Meus Pagamentos", "link": "{{ url_for('historico_pagamentos') }}", "icone": "fas fa-history" },
+    { "nome": "Minha Conta", "link": "{{ url_for('minha_conta') }}", "icone": "fas fa-user" },
+    { "nome": "Sair", "link": "{{ url_for('sair') }}", "icone": "fas fa-sign-out-alt" }
+  ];
+
+  // Se for gerente, adicionamos manualmente as outras páginas
+  if (perfilDoUsuario == "gerente") {
+    listaDePaginas.push({ "nome": "Clientes", "link": "{{ url_for('clientes_listar') }}", "icone": "fas fa-users" });
+    listaDePaginas.push({ "nome": "Usuários", "link": "{{ url_for('usuarios_listar') }}", "icone": "fas fa-users-cog" });
+    listaDePaginas.push({ "nome": "Taxas", "link": "{{ url_for('taxas') }}", "icone": "fas fa-cogs" });
+  }
+
+  // Esta função é chamada toda vez que alguém digita no campo (oninput)
+  function minhaBusca(idDoInput, idDosResultados) {
+    var textoBuscado = document.getElementById(idDoInput).value.toLowerCase();
+    var divDeResultados = document.getElementById(idDosResultados);
+    var htmlFinal = "";
+
+    // Se o campo estiver vazio, esconde a caixinha e para o código
+    if (textoBuscado == "") {
+      divDeResultados.style.display = "none";
+      return;
+    }
+
+    // Loop tradicional (iniciante) para percorrer a lista
+    for (var i = 0; i < listaDePaginas.length; i++) {
+      var nomeDaPagina = listaDePaginas[i].nome.toLowerCase();
+
+      // Verifica se o texto digitado está dentro do nome da página
+      if (nomeDaPagina.indexOf(textoBuscado) > -1) {
+        // Vai somando os links encontrados na variável htmlFinal
+        htmlFinal = htmlFinal + '<a href="' + listaDePaginas[i].link + '" class="search-result-item"><i class="' + listaDePaginas[i].icone + ' me-2 text-primary"></i>' + listaDePaginas[i].nome + '</a>';
+      }
+    }
+
+    // Se encontrou alguma coisa, mostra. Se não, esconde.
+    if (htmlFinal != "") {
+      divDeResultados.innerHTML = htmlFinal;
+      divDeResultados.style.display = "block";
+    } else {
+      divDeResultados.style.display = "none";
+    }
+  }
+
+  // Se clicar em qualquer lugar da tela, fechamos as listas abertas
+  document.onclick = function() {
+    document.getElementById('listaDesktop').style.display = 'none';
+    document.getElementById('listaMobile').style.display = 'none';
+  };
+</script>
+
+<!-- Modal Global de Edição de Dados (Gerente e Cliente) -->
+<div class="modal fade" id="modalEditarDadosGlobal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Solicitar Alteração de Meus Dados</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEdicaoGlobal">
+          {% set nomes_modal = session.get('usuario_logado', 'Usuário').split(' ', 1) %}
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control somente-letras" value="{{ nomes_modal[0] }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Sobrenome</label>
+              <input type="text" class="form-control somente-letras"
+                value="{{ nomes_modal[1] if nomes_modal|length > 1 else '' }}">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" value="{{ session.get('email', '') }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Telefone</label>
+              <input type="text" class="form-control mascara-telefone-celular"
+                value="{{ session.get('telefone', '') }}">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Profissão/Cargo</label>
+              <input type="text" class="form-control somente-letras" value="{{ session.get('profissao', '') }}">
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Estado</label>
+              <input type="text" class="form-control somente-letras" value="{{ session.get('estado', '') }}">
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Cidade</label>
+              <input type="text" class="form-control somente-letras" value="{{ session.get('cidade', '') }}">
+            </div>
+          </div>
+          <div class="alert alert-info mt-2 mb-0" style="font-size: 0.85rem;">
+            <i class="fas fa-info-circle me-1"></i> As alterações solicitadas serão analisadas pela administração do
+            sistema.
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          onclick="notificarSucesso('Solicitação Enviada', 'Seus dados foram enviados para atualização.');"
+          data-bs-dismiss="modal">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Enviar Mensagem ao Gerente -->
+<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Mensagem</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="col-form-label">Para:</label>
+            <input type="text" class="form-control" value="Ricardo Dantas (Gerente)" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Sua Mensagem:</label>
+            <textarea class="form-control" id="message-text" rows="4" placeholder="Digite aqui..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+          onclick="notificarSucesso('Sucesso', 'Sua mensagem foi enviada ao gerente.');">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Todas as Notificações -->
+<div class="modal fade" id="allNotificationsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Notificações Anteriores</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex align-items-center">
+              <div class="avatar-sm me-3">
+                <img src="{{ url_for('static', filename='images/portrait-senior-woman-MariaSilva.jpg') }}"
+                  alt="Maria Silva" class="avatar-img rounded-circle">
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1 fw-bold">Maria Silva</h6>
+                  <small class="text-muted">30 min atrás</small>
+                </div>
+                <p class="mb-1 text-muted small">Pagamento confirmado via PIX.</p>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex align-items-center">
+              <div class="avatar-sm me-3">
+                <img src="{{ url_for('static', filename='images/chadengle-JoseSouza.jpg') }}" alt="José Souza"
+                  class="avatar-img rounded-circle">
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1 fw-bold">José Souza</h6>
+                  <small class="text-muted">2 horas atrás</small>
+                </div>
+                <p class="mb-1 text-muted small">Solicitação de alteração de vencimento.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

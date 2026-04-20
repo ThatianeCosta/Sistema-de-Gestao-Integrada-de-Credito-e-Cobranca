@@ -1,0 +1,351 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+
+<!-- ================================================== -->
+<!--      PAINEL DE CONTROLE - VISÃO DO CLIENTE         -->
+<!-- ================================================== -->
+<div class="page-inner">
+  <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+      <h3 class="fw-bold mb-3">Meu Painel</h3>
+      <h6 class="op-7 mb-2">Bem-vindo(a), {{ session.get('usuario_logado') }}! Este é o resumo do seu empréstimo.</h6>
+    </div>
+  </div>
+
+  <!-- Cards de Resumo do Cliente -->
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-danger bubble-shadow-small"><i class="fas fa-hourglass-half"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Prazo para Próximo Pagamento</p>
+                <h4 class="card-title">{{ dados_dashboard.prazo_pagamento | safe }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card card-stats card-round">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-icon">
+              <div class="icon-big text-center icon-warning bubble-shadow-small"><i class="fas fa-calendar-alt"></i>
+              </div>
+            </div>
+            <div class="col col-stats ms-3 ms-sm-0">
+              <div class="numbers">
+                <p class="card-category">Próxima Parcela</p>
+                <h4 class="card-title">{{ dados_dashboard.proxima_parcela_valor }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela de Resumo Financeiro (Nova solicitação: Dados movidos para tabela) -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-round">
+        <div class="card-header card-header-cliente">
+          <div class="card-title">Minha Carteira</div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table align-items-center mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="text-center">Empréstimos Ativos</th>
+                  <th scope="col" class="text-center">Limite Disponível</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-center fw-bold" style="font-size: 1.2rem;">{{ dados_dashboard.emprestimos_ativos }}
+                  </td>
+                  <td class="text-center fw-bold text-success" style="font-size: 1.2rem;">R$ {{
+                    dados_dashboard.limite_disponivel }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos e Linha do Tempo do Cliente -->
+  <div class="row">
+    <!-- Gráfico de Progresso (Agora ocupa a largura total para dar espaço à legenda) -->
+    <div class="col-md-12">
+      <div class="card card-round" style="min-height: 400px;">
+        <div class="card-header card-header-cliente">
+          <div class="card-title">Progresso do Empréstimo</div>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center h-100">
+            <!-- Coluna do Gráfico (Esquerda) -->
+            <div class="col-md-8 position-relative">
+              <div class="chart-container" style="min-height: 300px; position: relative;">
+                <canvas id="progressoEmprestimoChart"></canvas>
+                <!-- Texto Centralizado Automaticamente -->
+                <div
+                  style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%; pointer-events: none;">
+                  <h6 class="fw-bold text-muted mb-0 text-uppercase" style="font-size: 12px; letter-spacing: 1px;">
+                    Status</h6>
+                  <h2 class="fw-bold mb-0 text-cliente-pago">{{ dados_dashboard.percentual_pago }}% <span
+                      style="font-size: 14px;">Pago</span></h2>
+                  <div class="mt-2 text-muted fw-bold" style="font-size: 13px;">Restante: <br> <span
+                      style="font-size: 15px;">{{ dados_dashboard.saldo_devedor }}</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coluna de Informações/Legenda (Direita) -->
+            <div class="col-md-4 border-start d-flex flex-column justify-content-center py-3">
+              <div class="mb-4">
+                <h6 class="text-muted text-uppercase mb-1" style="font-size: 11px;">Total do Empréstimo</h6>
+                <h3 class="fw-bold mb-0 text-dark">{{ dados_dashboard.total_emprestimo }}</h3>
+              </div>
+              <div class="mb-4">
+                <h6 class="text-muted text-uppercase mb-1" style="font-size: 11px;"><span
+                    class="legend-dot-pago"></span>Total
+                  Pago</h6>
+                <h3 class="fw-bold mb-0 text-cliente-pago">{{ dados_dashboard.total_pago }}</h3>
+              </div>
+              <div>
+                <h6 class="text-muted text-uppercase mb-1" style="font-size: 11px;"><span
+                    class="legend-dot-restante"></span>Faltam</h6>
+                <h3 class="fw-bold mb-0" style="color: #575962;">{{ dados_dashboard.saldo_devedor }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Histórico de Pagamentos (Gráfico de Barras) -->
+    <!-- Só mostra o gráfico de histórico se o cliente já tiver pago alguma coisa -->
+    {% if dados_dashboard.percentual_pago > 0 %}
+    <div class="col-md-12">
+      <div class="card card-round">
+        <div class="card-header card-header-cliente">
+          <div class="card-title">Histórico de Pagamentos</div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" style="min-height: 350px">
+            <canvas id="historicoPagamentosChart"></canvas>
+          </div>
+          <!-- Legenda Customizada para o Gráfico de Histórico (estilos movidos para custom_styles.css) -->
+          <div class="custom-legend-container">
+            <div class="legend-item">
+              <span class="legend-color-box legend-pago-antecipado"></span>
+              <span>Pagamento Antecipado</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color-box legend-pago-em-dia"></span>
+              <span>Pago em Dia</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color-box legend-parcela-atual"></span>
+              <span>Parcela Atual</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color-box legend-pendente"></span>
+              <span>Pendente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if dados_dashboard.get('esta_atrasado', False) %}
+<!-- Alerta de Atraso Flutuante (Compacto e não intrusivo) -->
+<div id="alertaAtrasoFixo" class="card-alerta-atraso shadow-lg">
+  <button type="button" class="btn-fechar-atraso"
+    onclick="document.getElementById('alertaAtrasoFixo').style.display='none'">
+    <i class="fas fa-times"></i>
+  </button>
+  <div class="text-center">
+    <div class="alerta-atraso-icon-mini mb-2">
+      <i class="fas fa-clock"></i>
+    </div>
+    <h6 class="fw-bold text-danger mb-1" style="font-size: 12px; letter-spacing: 1px;">PENDÊNCIA</h6>
+    <p class="mb-3" style="font-size: 13px; line-height: 1.3; color: #333;">Sua parcela de <strong>{{
+        dados_dashboard.proxima_parcela_valor }}</strong> está vencida.</p>
+    <a href="https://wa.me/5511999999999?text=Olá Ricardo, gostaria de regularizar meu pagamento." target="_blank"
+      class="btn btn-success btn-sm w-100 fw-bold">
+      <i class="fab fa-whatsapp me-1"></i> WhatsApp
+    </a>
+  </div>
+</div>
+{% endif %}
+
+{% endblock conteudo %}
+
+{% block scripts %}
+
+{% if dados_dashboard %}
+<script>
+  // Gráfico de Rosca (Progresso do Empréstimo do Cliente)
+  // 1. Para simplificar e evitar erros, pegamos todos os dados do cliente para uma única variável.
+  const dadosCliente = JSON.parse('{{ dados_dashboard | tojson | safe }}');
+  const valorPago = dadosCliente.grafico_progresso.pago;
+  const valorRestante = dadosCliente.grafico_progresso.restante;
+
+  var progressoChart = document.getElementById('progressoEmprestimoChart').getContext('2d');
+  var myProgressoChart = new Chart(progressoChart, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [valorPago, valorRestante],
+        backgroundColor: [
+          pegarCorDoCSS('--cor-cliente-progresso-pago'),
+          pegarCorDoCSS('--cor-cliente-progresso-restante')
+        ],
+        borderColor: [
+          'transparent',
+          'transparent'
+        ],
+        borderWidth: 0
+      }],
+      labels: ['Valor Pago', 'Valor Restante']
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutoutPercentage: 75, /* Deixa a rosca mais fina e o centro maior para o texto */
+      legend: {
+        display: false /* Removemos a legenda padrão pois criamos a nossa na direita */
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            var label = data.labels[tooltipItem.index];
+            return label + ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+          }
+        }
+      },
+      layout: {
+        padding: { left: 20, right: 20, top: 20, bottom: 20 }
+      }
+    }
+  });
+
+  // NOVO: Gráfico de Barras (Histórico de Pagamentos)
+  if (document.getElementById('historicoPagamentosChart')) {
+    const historicoCtx = document.getElementById('historicoPagamentosChart').getContext('2d');
+    const historicoData = dadosCliente.historico_chart;
+
+    // 1. Preparar arrays para cores, estilos e legendas customizadas
+    const backgroundColors = [];
+    const borderColors = [];
+    const borderDash = [];
+    const customTooltips = [];
+
+    historicoData.datasets[0].status.forEach((status) => {
+      switch (status) {
+        case 'pago_antecipado':
+          backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-antecipado'));
+          borderColors.push(pegarCorDoCSS('--cor-cliente-historico-antecipado-borda'));
+          borderDash.push([]);
+          customTooltips.push('Pagamento Antecipado!');
+          break;
+        case 'pago_em_dia':
+          backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-em-dia'));
+          borderColors.push(pegarCorDoCSS('--cor-cliente-historico-em-dia-borda'));
+          borderDash.push([]);
+          customTooltips.push('Pago em Dia');
+          break;
+        case 'atual':
+          backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-atual'));
+          borderColors.push(pegarCorDoCSS('--cor-cliente-historico-atual-borda'));
+          borderDash.push([5, 5]); // Tracejado
+          customTooltips.push('Parcela do Mês Atual');
+          break;
+        default: // 'futuro'
+          backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-pendente'));
+          borderColors.push(pegarCorDoCSS('--cor-cliente-historico-pendente-borda'));
+          borderDash.push([]);
+          customTooltips.push('Pendente');
+          break;
+      }
+    });
+
+    // 2. Atribuir as cores e estilos ao dataset do gráfico
+    historicoData.datasets[0].backgroundColor = backgroundColors;
+    historicoData.datasets[0].borderColor = borderColors;
+    historicoData.datasets[0].borderDash = borderDash;
+    historicoData.datasets[0].borderWidth = 2;
+
+    // 3. Criar o gráfico
+    new Chart(historicoCtx, {
+      type: 'bar',
+      data: historicoData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: { display: false }, // A legenda principal não é necessária, as cores já informam
+        tooltips: {
+          callbacks: {
+            // Mostra o valor em formato de moeda
+            label: function (tooltipItem, data) {
+              let label = data.datasets[tooltipItem.datasetIndex].label || '';
+              if (label) { label += ': '; }
+              if (tooltipItem.yLabel !== null) {
+                label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(tooltipItem.yLabel);
+              }
+              return label;
+            },
+            // Adiciona a legenda customizada (ex: "Pagamento Antecipado!")
+            afterLabel: function (tooltipItem, data) {
+              return customTooltips[tooltipItem.index];
+            }
+          }
+        },
+        scales: {
+          xAxes: [{ // Adicionado xAxes para controlar a cor dos rótulos (meses)
+            ticks: {
+              fontColor: pegarCorDoCSS('--cor-grafico-texto'), // Usa a cor do tema
+            },
+            gridLines: {
+              color: pegarCorDoCSS('--cor-grafico-grid'), // Usa a cor da grade do tema
+              zeroLineColor: pegarCorDoCSS('--cor-grafico-grid'), // Cor da linha zero
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              fontColor: pegarCorDoCSS('--cor-grafico-texto'),
+              beginAtZero: true,
+              // Formata o eixo Y para o formato de moeda brasileira
+              callback: function (value) {
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 }).format(value);
+              }
+            },
+            gridLines: {
+              color: pegarCorDoCSS('--cor-grafico-grid'), // Usa a cor da grade do tema
+              zeroLineColor: pegarCorDoCSS('--cor-grafico-grid'), // Cor da linha zero
+            }
+          }]
+        }
+      }
+    });
+  }
+</script>
+{% endif %}
+
+{% endblock %}
