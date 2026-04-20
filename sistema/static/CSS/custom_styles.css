@@ -1,0 +1,851 @@
+/* =================================================================
+   ARQUIVO DE ESTILOS PERSONALIZADOS
+   Organizado para facilitar a localização e edição das cores.
+================================================================= */
+
+/* --- DEFINIÇÃO DE VARIÁVEIS GLOBAIS (CORES DOS GRÁFICOS) --- */
+/* As cores definidas aqui são para o MODO CLARO por padrão. */
+/* Aqui definimos as cores que serão usadas nos gráficos. 
+   Se quiser mudar uma cor, mude AQUI e ela mudará no site todo. */
+:root {
+    --cor-grafico-texto: #333333;
+    --cor-grafico-grid: rgba(0, 0, 0, 0.1);
+    /* --- GRÁFICOS DO GERENTE --- */
+
+    /* Gráfico: Previsão de Entradas */
+    --cor-gerente-previsao-linha: #165F8C;
+    --cor-gerente-previsao-fundo-inicio: rgba(22, 95, 140, 0.5);
+    --cor-gerente-previsao-fundo-fim: rgba(22, 95, 140, 0);
+    --cor-gerente-previsao-ponto-borda: #165F8C;
+    --cor-gerente-previsao-ponto-fundo: #ffffff;
+
+    /* Gráfico: Situação de Pagamentos */
+    --cor-gerente-situacao-em-dia: #4EA60F;
+    --cor-gerente-situacao-em-dia-borda: #3D820B;
+    --cor-gerente-situacao-atrasado: #D97904;
+    --cor-gerente-situacao-atrasado-borda: #B86503;
+    --cor-gerente-situacao-quitado: #165F8C;
+    --cor-gerente-situacao-quitado-borda: #124D74;
+
+    /* Gráfico: Lucro Bruto vs Líquido */
+    --cor-gerente-lucro-bruto: #4EA60F;
+    --cor-gerente-lucro-bruto-borda: #3D820B;
+    --cor-gerente-lucro-liquido: #165F8C;
+    --cor-gerente-lucro-liquido-borda: #124D74;
+
+    /* Gráfico: Comparativo (Emprestado vs Recebido) */
+    --cor-gerente-comparativo-emprestado: #165F8C;
+    --cor-gerente-comparativo-emprestado-borda: #124D74;
+    /* Tom de azul mais escuro para a borda */
+    --cor-gerente-comparativo-recebido: #4EA60F;
+    --cor-gerente-comparativo-recebido-borda: #3D820B;
+    /* Tom de verde mais escuro para a borda */
+
+    /* --- GRÁFICOS DO CLIENTE --- */
+
+    /* Gráfico: Progresso do Empréstimo */
+    --cor-cliente-progresso-pago: #4EA60F;
+    /* Verde Esmeralda */
+    --cor-cliente-progresso-pago-borda: #3D820B;
+    --cor-cliente-progresso-restante: #F2C166;
+    /* Pêssego */
+    --cor-cliente-progresso-restante-borda: #D9AE55;
+
+
+    /* Gráfico: Histórico de Pagamentos */
+    --cor-cliente-historico-antecipado: #165F8C;
+    /* Azul */
+    --cor-cliente-historico-antecipado-borda: #124D74;
+    /* Borda Azul */
+    --cor-cliente-historico-em-dia: #4EA60F;
+    /* Verde Esmeralda */
+    --cor-cliente-historico-em-dia-borda: #3D820B;
+    /* Borda Verde */
+    --cor-cliente-historico-atual: #D9CB04;
+    /* Amarelo */
+    --cor-cliente-historico-atual-borda: #B5A903;
+    --cor-cliente-historico-pendente: #D97904;
+    /* Laranja Escuro */
+    --cor-cliente-historico-pendente-borda: #B86503;
+}
+
+/* Aplica o fundo ao contêiner do gráfico no modo claro */
+.chart-container {
+    background-color: #F8F8F8; /* Cinza clarinho para o fundo do gráfico */
+    border-radius: 8px; /* Bordas arredondadas para harmonizar com o tema */
+    padding: 15px; /* Adiciona um pouco de padding para o gráfico não colar nas bordas */
+}
+
+/* --- 1. CORES PRINCIPAIS DO TEMA --- */
+/* Esta classe define a cor de fundo principal para o sidebar e header */
+.bg-theme-primary {
+    background-color: #165F8C !important;
+}
+
+
+/* --- 2. BARRA LATERAL (SIDEBAR) --- */
+/* Cor dos textos principais (branco puro) e do usuário */
+.sidebar .nav>.nav-item>a>p,
+.sidebar .user .info a>span {
+    color: #FFFFFF !important;
+}
+
+/* Cor dos ícones principais (salmão) */
+.sidebar .nav>.nav-item>a>i {
+    color: #D97904 !important;
+}
+
+/* --- EFEITOS DE ITEM ATIVO E HOVER --- */
+
+/* Item de menu ATIVO (selecionado) */
+.sidebar .nav>.nav-item.active>a {
+    background: #D97904 !important;
+    /* Fundo Laranja Escuro para o item ativo */
+}
+
+/* Garante que o texto e o ícone do item ativo/aberto fiquem brancos */
+.sidebar .nav>.nav-item.active>a p,
+.sidebar .nav>.nav-item.active>a i,
+.sidebar .nav>.nav-item>a[aria-expanded="true"] p,
+.sidebar .nav>.nav-item>a[aria-expanded="true"] i {
+    color: #FFFFFF !important;
+}
+
+/* Barra vertical branca para o item ativo */
+.sidebar .nav>.nav-item.active>a:before {
+    background: #FFFFFF !important;
+    /* Cor da barra */
+    width: 3px;
+    /* Espessura da barra */
+    opacity: 1 !important;
+}
+
+/* Efeito ao passar o mouse sobre qualquer item do menu */
+.sidebar .nav-item a:focus,
+.sidebar .nav-item a:hover {
+    background-color: #F2C166 !important;
+    /* Fundo Pêssego ao passar o mouse */
+}
+
+/* Cor do texto e ícone ao passar o mouse (brilho branco) */
+.sidebar .nav>.nav-item a:hover p,
+.sidebar .nav>.nav-item a:hover i,
+.sidebar .nav-collapse li a:hover .sub-item {
+    color: #FFFFFF !important;
+}
+
+/* --- ESTILOS DOS SUBMENUS --- */
+
+/* Cor e peso do texto para os submenus */
+/* Usamos um seletor mais específico para garantir que a opacidade seja 1 */
+.sidebar .nav-collapse li a .sub-item {
+    color: #FFFFFF !important;
+    /* Branco puro, sem opacidade */
+    opacity: 1;
+    /* Garante que não haja transparência herdada */
+    font-weight: 600;
+    /* Negrito, igual aos itens principais */
+}
+
+/* Aumenta o recuo dos submenus para criar hierarquia */
+.sidebar .nav-collapse li a {
+    padding-left: 35px !important;
+}
+
+/* Substitui o ícone padrão por uma bolinha (bullet) sólida na cor salmão */
+.sidebar .nav-collapse li a .sub-item::before {
+    content: '\f111';
+    /* Código do ícone de círculo (fa-circle) do Font Awesome */
+    font-family: 'Font Awesome 5 Solid';
+    /* Usa a família de fontes para ícones sólidos */
+    font-weight: 900;
+    /* Necessário para ícones sólidos */
+    font-size: 7px;
+    /* Tamanho do ícone (bullet) */
+    color: #D97904;
+    /* Cor salmão */
+    background: transparent;
+    /* Remove o fundo do bullet antigo */
+    /* Reseta e ajusta a posição do novo ícone */
+    width: auto;
+    height: auto;
+    left: -20px;
+    top: 50%;
+    /* Centraliza verticalmente melhor */
+    transform: translateY(-50%);
+    border-radius: 0;
+}
+
+
+/* --- 3. CABEÇALHOS DOS CARDS (TÍTULOS) --- */
+/* A cor de fundo dos títulos dos gráficos é definida aqui. */
+.card-header-gerente,
+.card-header-cliente {
+    background-color: #165F8C !important;
+    /* Fundo azul para o cabeçalho */
+    border-bottom: 1px solid #124D74 !important;
+    /* Linha de borda mais escura */
+}
+
+/* Cor do texto para ambos os cabeçalhos customizados */
+.card-header-gerente .card-title,
+.card-header-cliente .card-title {
+    color: #FFFFFF !important;
+    /* Texto branco */
+    font-weight: bold !important;
+}
+
+/* --- 3.1 ESTILO DOS CARDS (GRÁFICOS E TABELAS) --- */
+/* Adiciona borda e sombra em todos os cards principais */
+.card.card-round {
+    border: 1px solid #ebedf2 !important;
+    /* Borda suave em todos os lados */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08) !important;
+    /* Sombra suave */
+    border-radius: 10px !important;
+    /* Bordas arredondadas */
+    overflow: hidden;
+    /* ESSENCIAL: Garante que o conteúdo (cabeçalho da tabela) respeite as bordas arredondadas. */
+}
+
+
+/* --- 4. LEGENDAS CUSTOMIZADAS (GRÁFICOS) --- */
+/* Container que segura a legenda */
+.custom-legend-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 15px;
+}
+
+/* Cada item da legenda (caixinha de cor + texto) */
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #333333;
+    /* Cinza escuro/Preto no modo claro */
+}
+
+/* A caixinha colorida da legenda */
+.legend-color-box {
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+    border-radius: 3px;
+}
+
+/* Cores específicas para a legenda do Histórico de Pagamentos do Cliente */
+.legend-pago-antecipado {
+    background-color: var(--cor-cliente-historico-antecipado);
+    border: 1px solid var(--cor-cliente-historico-antecipado-borda);
+}
+
+.legend-pago-em-dia {
+    background-color: var(--cor-cliente-historico-em-dia);
+    border: 1px solid var(--cor-cliente-historico-em-dia-borda);
+}
+
+.legend-parcela-atual {
+    background-color: var(--cor-cliente-historico-atual);
+    border: 1px dashed var(--cor-cliente-historico-atual-borda);
+}
+
+.legend-pendente {
+    background-color: var(--cor-cliente-historico-pendente);
+    border: 1px solid var(--cor-cliente-historico-pendente-borda);
+}
+
+/* --- 5. ÍCONES DOS CARDS DE RESUMO (GERENTE) --- */
+/* Cores personalizadas para os ícones dos cards de resumo */
+.card-stats .icon-primary {
+    background: #165F8C !important;
+    /* Total Emprestado */
+}
+
+.card-stats .icon-info {
+    background: #F2C166 !important;
+    /* Disponibilidade Caixa */
+}
+
+.card-stats .icon-success {
+    background: #4EA60F !important;
+    /* Recebimentos Mês */
+}
+
+.card-stats .icon-danger {
+    background: #D97904 !important;
+    /* Taxa de Atraso */
+}
+
+/* --- 6. TEXTO DOS CARDS DE RESUMO (GERENTE) --- */
+/* Altera a cor e o peso da fonte para todos os cards de resumo */
+.card-stats .card-category,
+.card-stats .card-title {
+    color: #1a2035;
+    /* Removido o !important para permitir a troca no modo escuro */
+    font-weight: bold !important;
+}
+
+/* --- 6.1 TEXTO DE DESTAQUE PARA PAGAMENTOS (CLIENTE) --- */
+.text-cliente-pago {
+    color: #4EA60F !important;
+    /* Verde Esmeralda para harmonia */
+}
+
+/* Cores específicas para valores dos cards */
+#val-recebimentos {
+    color: #4EA60F !important;
+    /* Verde */
+}
+
+#val-taxa-atraso {
+    color: #D97904 !important;
+    /* Vermelho */
+}
+
+/* --- 7. CABEÇALHO DA TABELA (AÇÕES URGENTES) --- */
+/* Altera a cor de fundo do cabeçalho da tabela de atrasos */
+.table .thead-dark th {
+    background-color: #e8e3e3fc;
+    /* Cinza azulado claro (mesma cor do fundo da página) */
+    color: #575962;
+    /* Tom de cinza escuro para o texto */
+    border-color: #ebedf2;
+}
+
+/* --- 8. INDICADORES (ABAIXO DO GRÁFICO) --- */
+/* Cor do texto para "Índice de Reinvestimento" e "Capital em Risco" */
+.indicador-label {
+    color: #333333;
+    /* Cinza escuro no modo claro */
+}
+
+/* Cores específicas para o Índice de Reinvestimento */
+.text-reinvestimento {
+    color: #4EA60F !important;
+}
+
+.bg-reinvestimento {
+    background-color: #4EA60F !important;
+}
+
+/* --- 9. ESTILIZAÇÃO PADRÃO PARA TABELAS DO SISTEMA --- */
+/* 
+  Estas regras foram generalizadas para funcionar em todas as tabelas do sistema
+  que estão dentro de um <div class="card">. Isso evita a necessidade de saber 
+  o ID específico de cada tabela, tornando a manutenção mais fácil.
+*/
+
+/* Estilo para o cabeçalho de qualquer tabela com a classe .table dentro de um .card */
+.card .table .thead-dark th {
+    background-color: #165F8C !important;
+    /* Fundo azul, !important para sobrepor o estilo geral */
+    color: #FFFFFF !important;
+    /* Texto branco */
+    font-weight: bold;
+    /* Leve negrito */
+    border-bottom-width: 0;
+    /* Remove a borda para um visual limpo com cantos arredondados */
+}
+
+/* Cor das linhas alternadas (zebradas) */
+.card .table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #F8F9FA;
+    /* Tom de cinza bem claro, como solicitado */
+}
+
+/* Arredondamento dos cantos da tabela */
+.card .table {
+    border-collapse: separate !important;
+    /* Essencial para o border-radius funcionar em tabelas */
+    border-spacing: 0;
+}
+
+.card .table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.card .table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.card .table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.card .table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+/* --- 10. BADGES SÓBRIOS (PERFIL GERENTE) --- */
+/* Cores mais profissionais e menos saturadas para a visão administrativa */
+
+.badge-sober-success {
+    background-color: #27ae60 !important;
+    /* Verde mata */
+    color: white !important;
+}
+
+.badge-sober-danger {
+    background-color: #c0392b !important;
+    /* Vermelho escuro/Vinho */
+    color: white !important;
+}
+
+.badge-sober-warning {
+    background-color: #d35400 !important;
+    /* Laranja queimado */
+    color: white !important;
+}
+
+/* Paginação (Anterior, 1, 2, Próximo) - Texto Preto */
+/* A regra agora se aplica a qualquer paginação de datatable dentro de um card */
+.card .dataTables_wrapper .dataTables_paginate .page-link {
+    color: black;
+}
+
+/* Garante que o número da página ativa continue com texto branco para melhor contraste */
+.card .dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+    color: white;
+}
+
+/* =================================================================
+   11. MODO ESCURO (IDENTIDADE VISUAL PREMIUM)
+================================================================= */
+
+/* --- FUNDO DA PÁGINA (Área Externa) --- */
+body.dark-mode,
+body.dark-mode .main-panel,
+body.dark-mode .page-inner {
+    background-color: #111827 !important;
+    /* Cinza profundo neutro (quase preto) */
+    color: #EEEEEE !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Overrides de Cores para Gráficos no Modo Escuro */
+    --cor-grafico-texto: #FFFFFF !important;
+    /* Branco Puro para facilitar a visualização */
+    --cor-grafico-grid: rgba(255, 255, 255, 0.2) !important;
+    --cor-grafico-fundo: #111827 !important; /* Fundo escuro para gráficos no modo escuro */
+    /* Linhas brancas nítidas e visíveis */
+    --cor-gerente-previsao-linha: #165F8C;
+    /* Ciano Neon */
+    --cor-gerente-previsao-fundo-inicio: rgba(22, 95, 140, 0.15);
+    --cor-gerente-previsao-fundo-fim: rgba(22, 95, 140, 0);
+    --cor-gerente-previsao-ponto-borda: #165F8C;
+    --cor-gerente-previsao-ponto-fundo: #ffffff;
+    --cor-gerente-lucro-bruto: #4EA60F;
+    /* Verde */
+    --cor-gerente-lucro-liquido: #165F8C;
+    /* Azul */
+}
+
+/* Garante que o chart-container também mude no modo escuro */
+body.dark-mode .chart-container {
+    background-color: var(--cor-grafico-fundo);
+}
+
+/* --- FUNDO DO MODAL/CARD --- */
+body.dark-mode .card {
+    background-color: #1F2937 !important;
+    /* Cinza-escuro neutro */
+    border: 1px solid #374151 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Fundo específico para a área do gráfico de previsão (mais escuro que o card) */
+body.dark-mode #chartPrevisaoEntradas {
+    background-color: #111827 !important;
+    border-radius: 8px;
+}
+
+/* --- ÁREA DE TÍTULO E TEXTOS --- */
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4:not(.user-box h4),
+body.dark-mode h6,
+body.dark-mode .card-title,
+body.dark-mode .card-category,
+body.dark-mode .text-muted,
+body.dark-mode .op-7,
+body.dark-mode label,
+body.dark-mode .indicador-label,
+body.dark-mode .legend-item,
+body.dark-mode .profile-username .fw-bold,
+body.dark-mode .progress-status span,
+body.dark-mode .progress-status b,
+body.dark-mode .card-body p,
+body.dark-mode .card-body span:not(.badge),
+body.dark-mode .u-text h4 {
+    color: #FFFFFF !important;
+    /* Branco Puro para facilitar a visualização */
+    opacity: 1 !important;
+    /* Garante nitidez total e a cor real no modo escuro */
+}
+
+/* --- CABEÇALHO DA TABELA (Barra de Títulos) --- */
+body.dark-mode .table thead th,
+body.dark-mode .card .table .thead-dark th,
+body.dark-mode .card .table .thead-light th {
+    background-color: #1E3A8A !important;
+    /* Azul-marinho profundo */
+    color: #FFFFFF !important;
+    /* Branco Puro */
+    font-weight: 700 !important;
+    border: none !important;
+    text-transform: uppercase;
+}
+
+/* Linha Ímpar (mais escura) */
+body.dark-mode .table tbody tr:nth-of-type(odd),
+body.dark-mode .table tbody tr:nth-of-type(odd)>td,
+/* Mantém a cor do fundo */
+body.dark-mode .table tbody tr:nth-of-type(odd)>th,
+/* Mantém a cor do fundo */
+body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #111827 !important;
+}
+
+/* Linha Par (mais clara) */
+body.dark-mode .table tbody tr:nth-of-type(even),
+body.dark-mode .table tbody tr:nth-of-type(even)>td,
+/* Mantém a cor do fundo */
+body.dark-mode .table tbody tr:nth-of-type(even)>th,
+/* Mantém a cor do fundo */
+body.dark-mode .table-striped>tbody>tr:nth-of-type(even) {
+    background-color: #1F2937 !important;
+    /* Corrigido para o cinza-escuro neutro */
+}
+
+/* Texto das Linhas (Todas as Tabelas) */
+body.dark-mode .table td,
+body.dark-mode .table th {
+    color: #EEEEEE !important;
+    /* Branco Off-White */
+    border-bottom: 1px solid #374151 !important;
+}
+
+/* --- DESTAQUE DO VALOR (Pílulas) --- */
+body.dark-mode .badge-primary,
+body.dark-mode .badge-info {
+    background-color: #1D4ED8 !important;
+    /* Azul cobalt vibrante */
+    color: #FFFFFF !important;
+    border-radius: 50px !important;
+    padding: 5px 12px !important;
+    font-weight: 600;
+}
+
+/* --- ÍCONES DE AÇÃO --- */
+body.dark-mode .form-button-action .btn i,
+body.dark-mode .btn-link i,
+body.dark-mode .btn-link.btn-primary i,
+body.dark-mode .btn-link.btn-info i {
+    color: #FFFFFF !important;
+    /* Branco Puro */
+}
+
+/* --- AJUSTES EXTRAS PARA SIDEBAR E TOPBAR --- */
+body.dark-mode .sidebar,
+body.dark-mode .logo-header,
+body.dark-mode .main-header-logo {
+    background-color: #165F8C !important;
+    /* Azul-marinho profundo na Sidebar e área da Logo */
+}
+
+body.dark-mode .main-header,
+body.dark-mode .navbar-header {
+    background-color: #111827 !important;
+    /* Cinza profundo neutro no Topo */
+    border-bottom: 1px solid #374151 !important;
+}
+
+body.dark-mode #icone-tema {
+    color: #EEEEEE !important;
+}
+
+/* --- MODAL DE PERFIL (DROPDOWN - ÁREA CLARA) --- */
+body.dark-mode .dropdown-user {
+    background-color: #ffffff !important;
+    border: 1px solid #ebedf2 !important;
+}
+
+body.dark-mode .dropdown-user .user-box h4 {
+    color: #1E3A8A !important;
+    /* Azul Marinho Profundo para o nome no modal */
+}
+
+body.dark-mode .dropdown-user .user-box p.text-muted,
+body.dark-mode .dropdown-user .dropdown-item {
+    color: #666666 !important;
+    /* Cinza escuro para os demais textos */
+}
+
+/* --- FOOTER (RODAPÉ) NO MODO ESCURO --- */
+body.dark-mode .footer {
+    background-color: #111827 !important;
+    border-top: 1px solid #374151 !important;
+    color: #EEEEEE !important;
+}
+
+body.dark-mode .footer .nav-link,
+body.dark-mode .footer .copyright,
+body.dark-mode .footer a {
+    color: #EEEEEE !important;
+}
+
+/* --- MODAIS (Geral) --- */
+.modal-content {
+    border-radius: 15px !important;
+    /* Bordas mais suaves para todos os modais */
+}
+
+/* --- MODAIS NO MODO ESCURO (Mensagens e Notificações) --- */
+body.dark-mode .modal-content {
+    background-color: #1F2937 !important;
+    /* Fundo cinza-escuro neutro */
+    color: #EEEEEE !important;
+    /* Define a cor do texto principal do modal como branco */
+    border: 1px solid #374151 !important;
+}
+
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    border-color: #374151 !important;
+}
+
+body.dark-mode .modal-header .modal-title {
+    color: #FFFFFF !important;
+}
+
+/* Ajuste para todos os textos dentro do corpo do modal para garantir que fiquem brancos */
+body.dark-mode .modal-body,
+body.dark-mode .modal-body p,
+body.dark-mode .modal-body small,
+body.dark-mode .modal-body h6,
+body.dark-mode .modal-body span,
+body.dark-mode .modal-body .text-muted,
+body.dark-mode .modal-body .notif-content .time {
+    color: #EEEEEE !important;
+    /* Branco Off-White para legibilidade */
+}
+
+/* Ajuste para listas e itens dentro do corpo do modal */
+body.dark-mode .modal-body .list-group-item {
+    background-color: transparent !important;
+    color: #EEEEEE !important;
+    /* Garante que o texto do item da lista seja branco */
+    border-color: #374151 !important;
+}
+
+body.dark-mode .modal-body .list-group-item:hover {
+    background-color: #374151 !important;
+    /* Destaque suave no hover */
+}
+
+/* Campos de entrada, áreas de texto e blocos de resposta (collapse) */
+body.dark-mode .modal-body input,
+body.dark-mode .modal-body textarea,
+body.dark-mode .modal-body .bg-light {
+    background-color: #111827 !important;
+    /* Fundo "quase preto" para os campos */
+    color: #FFFFFF !important;
+    /* Texto branco para os campos */
+    border: 1px solid #4B5563 !important;
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    /* Torna o ícone X branco */
+}
+
+/* =================================================================
+   AJUSTE PARA A TABELA CABER NA TELA (TIRAR BARRA DE ROLAGEM)
+   ================================================================= */
+
+/* 1. Diminuindo o tamanho da letra e o espaço dentro das células */
+#historicoPagamentosTable th,
+#historicoPagamentosTable td {
+    padding: 12px 15px !important;
+    /* Voltando ao espaço normal e confortável */
+    font-size: 14px !important;
+    /* Voltando ao tamanho de letra padrão */
+    text-align: center;
+    /* Centraliza os textos para ficar organizado */
+    vertical-align: middle !important;
+}
+
+/* 2. Faz o texto "pular linha" em vez de esticar a tabela para o lado */
+#historicoPagamentosTable td {
+    white-space: normal !important;
+    word-wrap: break-word;
+    /* Quebra a frase se ela for muito longa (ex: Observações) */
+}
+
+/* --- NOVO CARD DE ALERTA DE ATRASO (FLUTUANTE) */
+.card-alerta-atraso {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 220px;
+    background-color: #ffffff;
+    border: 3px solid #D97904;
+    border-radius: 15px;
+    z-index: 10000;
+    padding: 20px 15px;
+    animation: bounceInUp 0.8s;
+    /* Usa animação do sistema */
+}
+
+.btn-fechar-atraso {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: transparent;
+    border: 0;
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+}
+
+.alerta-atraso-icon-mini {
+    width: 45px;
+    height: 45px;
+    background-color: rgba(217, 121, 4, 0.1);
+    color: #D97904;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 20px;
+}
+
+/* Ajuste para o Modo Escuro */
+body.dark-mode .card-alerta-atraso {
+    background-color: #1F2937 !important;
+    border-color: #D97904 !important;
+}
+
+body.dark-mode .card-alerta-atraso p {
+    color: #EEEEEE !important;
+}
+
+/* 4. Garante que a tabela tente usar apenas o espaço disponível */
+#historicoPagamentosTable {
+    width: 100% !important;
+}
+
+/* --- CAMPOS DESABILITADOS/READONLY NO MODO ESCURO (Página Minha Conta) --- */
+body.dark-mode .form-control:disabled,
+body.dark-mode .form-control[readonly] {
+    background-color: #374151 !important;
+    /* Fundo cinza suave */
+    color: #FFFFFF !important;
+    /* Letras brancas para contraste */
+    border-color: #4B5563 !important;
+    opacity: 1 !important;
+    /* Remove o efeito esmaecido do Bootstrap */
+}
+
+/* --- ALERTAS NO MODO ESCURO --- */
+body.dark-mode .alert,
+body.dark-mode .alert-info,
+body.dark-mode .modal-body .alert-info,
+body.dark-mode .bg-light:not(.dropdown-user) {
+    background-color: #165F8C !important;
+    /* Azul marinho profundo para contraste */
+    color: #ffffff !important;
+    /* Texto branco nítido */
+    border: 1px solid #3b82f6 !important;
+    /* Borda azul vibrante para destaque */
+}
+
+/* Garante que o título e a mensagem das notificações (toasts) também fiquem brancos no modo escuro */
+body.dark-mode .alert [data-notify="title"],
+body.dark-mode .alert [data-notify="message"] {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Estilo para Alerta de Atenção (Warning) no Modo Escuro */
+body.dark-mode .alert-warning,
+body.dark-mode .modal-body .alert-warning {
+    background-color: #423212 !important;
+    /* Fundo marrom escuro/fechado */
+    color: #ffda6a !important;
+    /* Texto amarelo claro para leitura */
+    border: 1px dashed #ffc107 !important;
+    /* Borda amarela tracejada */
+}
+
+/* --- SISTEMA DE PESQUISA (RESULTADOS AUTOCOMPLETE) --- */
+.nav-search .input-group {
+    position: relative;
+}
+
+.search-results-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #ebedf2;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 9999;
+    max-height: 280px;
+    overflow-y: auto;
+    display: none;
+}
+
+body.dark-mode .search-results-container {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+.search-result-item {
+    display: block;
+    padding: 10px 15px;
+    color: #575962;
+    text-decoration: none !important;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: #f8f9fa;
+    color: #165F8C;
+}
+
+body.dark-mode .search-result-item {
+    color: #EEEEEE !important;
+    border-bottom-color: #374151;
+}
+
+body.dark-mode .search-result-item:hover {
+    background-color: #374151 !important;
+}
+
+/* --- PONTOS DE LEGENDA PARA O GRÁFICO DE PROGRESSO --- */
+.legend-dot-pago,
+.legend-dot-restante {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.legend-dot-pago {
+    background-color: #4EA60F; /* Verde */
+}
+
+.legend-dot-restante {
+    background-color: #F2C166; /* Pêssego */
+}
