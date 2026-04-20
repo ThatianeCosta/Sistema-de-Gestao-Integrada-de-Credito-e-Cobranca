@@ -1,0 +1,229 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Clientes</h3>
+            <h6 class="op-7 mb-2">Gerenciamento de Carteiras de Clientes</h6>
+        </div>
+    </div>
+
+    <!-- NOVOS CARDS DE RESUMO -->
+    {% if session.get('perfil') == 'gerente' %}
+    <div class="row">
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small"><i
+                                    class="fas fa-users"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Total de Clientes</p>
+                                <h4 class="card-title">{{ total_clientes }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-success bubble-shadow-small"><i
+                                    class="fas fa-dollar-sign"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Soma das Parcelas</p>
+                                <h4 class="card-title">{{ soma_parcelas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-danger bubble-shadow-small"><i
+                                    class="fas fa-exclamation-triangle"></i></div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Soma Parcelas Atrasadas</p>
+                                <h4 class="card-title">{{ soma_parcelas_atrasadas }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="card-title">Carteira de Clientes</div>
+                        <!-- Filtro Simples -->
+                        <div class="input-group w-25">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            <input type="text" class="form-control" id="filtro-clientes"
+                                placeholder="Filtrar cliente...">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Nome completo do cliente cadastrado.">
+                                        Cliente <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Situação atual do cliente (Em Dia ou Atrasado).">
+                                        Status Geral <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Quantidade de contratos de empréstimo em aberto.">
+                                        Empréstimos Ativos <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Valor da parcela mensal a ser paga.">
+                                        Valor da Parcela <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Taxa de juros mensal aplicada ao empréstimo do cliente.">
+                                        Taxas <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Número de parcelas que ainda faltam ser pagas.">
+                                        Parcelas Restantes <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Valor pré-aprovado disponível para novos empréstimos.">
+                                        Limite Disponível <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                    <th data-toggle="tooltip" data-placement="top"
+                                        title="Clique na linha para ver mais informações.">
+                                        Detalhes <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cliente in clientes %}
+                                <tr data-bs-toggle="collapse" data-bs-target="#detalhe-{{ cliente.id }}"
+                                    style="cursor: pointer;" aria-expanded="false"
+                                    aria-controls="detalhe-{{ cliente.id }}">
+                                    <td class="fw-bold text-primary">{{ cliente.nome }}</td>
+                                    <td>
+                                        {% if cliente.status == 'Em Dia' %}
+                                        <span class="badge badge-success">Em Dia</span>
+                                        {% elif cliente.status == 'Atrasado' %}
+                                        <span class="badge badge-danger">Atrasado</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">{{ cliente.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ cliente.emprestimos_ativos }}</td>
+                                    <td>R$ {{ cliente.valor_parcela }}</td>
+                                    <td>{{ cliente.taxa }}</td>
+                                    <td>{{ cliente.parcelas_restantes }}</td>
+                                    <td>R$ {{ cliente.limite_disponivel }}</td>
+                                    <td><i class="fas fa-chevron-down"></i></td>
+                                </tr>
+                                <!-- Linha de Detalhes (Escondida) -->
+                                <tr id="detalhe-{{ cliente.id }}" class="collapse bg-light">
+                                    <td colspan="8">
+                                        <div class="p-3">
+                                            <h6 class="fw-bold mb-3">Detalhamento Financeiro - {{ cliente.nome }}</h6>
+                                            {% if cliente.detalhes %}
+                                            <table class="table table-sm table-bordered bg-white">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Tipo de Empréstimo</th>
+                                                        <th>Valor do Empréstimo</th>
+                                                        <th>Status</th>
+                                                        <th>Vencimento</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for detalhe in cliente.detalhes %}
+                                                    <tr>
+                                                        <td>{{ detalhe.tipo }}</td>
+                                                        <td>R$ {{ detalhe.valor }}</td>
+                                                        <td>
+                                                            {% if detalhe.status == 'Atrasado' %}
+                                                            <span class="text-danger fw-bold">Atrasado</span>
+                                                            {% elif detalhe.status == 'Pago' %}
+                                                            <span class="text-success fw-bold">Pago</span>
+                                                            {% else %}
+                                                            <span class="text-warning fw-bold">{{ detalhe.status
+                                                                }}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ detalhe.vencimento }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            {% else %}
+                                            <p class="text-muted mb-0">Este cliente não possui empréstimos ativos no
+                                                momento.</p>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // Inicializa os tooltips (descrições que aparecem ao passar o mouse)
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("#filtro-clientes").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("table tbody tr[data-bs-toggle='collapse']").each(function () {
+                var mainRow = $(this);
+                var detailRow = mainRow.next("tr.collapse");
+                var isMatch = mainRow.text().toLowerCase().indexOf(value) > -1;
+
+                if (value.length > 0) {
+                    if (isMatch) {
+                        mainRow.show();
+                        detailRow.addClass('show').css('display', 'table-row');
+                    } else {
+                        mainRow.hide();
+                        detailRow.removeClass('show').css('display', 'none');
+                    }
+                } else {
+                    mainRow.show();
+                    detailRow.removeClass('show').css('display', '');
+                }
+            });
+        });
+    });
+</script>
+{% endblock scripts %}
