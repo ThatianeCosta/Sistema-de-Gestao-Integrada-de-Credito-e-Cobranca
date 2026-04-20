@@ -1,0 +1,72 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Minha Conta</h3>
+            <h6 class="op-7 mb-2">Visão geral de {{ usuario.nome }} {{ usuario.sobrenome }}</h6>
+        </div>
+    </div>
+
+    <!-- Dados Pessoais -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="card-title">Meus Dados Cadastrais</div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Nome Completo</label>
+                                <input type="text" class="form-control"
+                                    value="{{ usuario.nome }} {{ usuario.sobrenome }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" class="form-control" value="{{ usuario.email }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="text" class="form-control" value="{{ usuario.telefone }}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Profissão/Cargo</label>
+                                <input type="text" class="form-control" value="{{ usuario.profissao }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <input type="text" class="form-control" value="{{ usuario.estado }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cidade</label>
+                                <input type="text" class="form-control" value="{{ usuario.cidade }}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#modalEditarDadosGlobal">
+                            Solicitar Alteração de Dados
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}

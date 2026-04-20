@@ -1,0 +1,83 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Cadastro de Usuário</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="card-title">Informações do Usuário</div>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('usuarios_cadastrar') }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="campoNome">Nome</label>
+                                    <input type="text" class="form-control" id="campoNome" name="campoNome"
+                                        placeholder="Digite o nome" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="campoSobrenome">Sobrenome</label>
+                                    <input type="text" class="form-control" id="campoSobrenome" name="campoSobrenome"
+                                        placeholder="Digite o sobrenome" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="campoEmail">Email</label>
+                                    <input type="email" class="form-control" id="campoEmail" name="campoEmail"
+                                        placeholder="Digite o email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="campoTelefone">Telefone</label>
+                                    <input type="text" class="form-control mascara-telefone-celular" id="campoTelefone"
+                                        name="campoTelefone" placeholder="(99) 99999-9999" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="cargoId">Cargo</label>
+                                    <select class="form-select" id="cargoId" name="cargoId" required>
+                                        <option value="" disabled selected>Selecione um cargo</option>
+                                        {% for cargo in cargos %}
+                                        <option value="{{ cargo.id }}">{{ cargo.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="senha">Senha</label>
+                                    <input type="password" class="form-control" id="senha" name="senha"
+                                        placeholder="Digite a senha" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="repetirSenha">Repetir Senha</label>
+                                    <input type="password" class="form-control" id="repetirSenha" name="repetirSenha"
+                                        placeholder="Repita a senha" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                            <a href="{{ url_for('usuarios_listar') }}" class="btn btn-danger">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}

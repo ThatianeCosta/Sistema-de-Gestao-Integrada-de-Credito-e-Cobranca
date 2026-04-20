@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Login - SysEmpréstimos</title>
+  <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+  <link rel="icon" href="{{ url_for('static', filename='images/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+
+  <!-- Fonts and icons -->
+  <script src="{{ url_for('static', filename='js/plugin/webfont/webfont.min.js') }}"></script>
+  <script>
+    WebFont.load({
+      google: { families: ["Public Sans:300,400,500,600,700"] },
+      custom: {
+        families: ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+        urls: ["{{ url_for('static', filename='css/fonts.min.css') }}"],
+      },
+      active: function () {
+        sessionStorage.fonts = true;
+      },
+    });
+  </script>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/kaiadmin.min.css') }}" />
+
+  <style>
+    body.login {
+      background-image: url("{{ url_for('static', filename='images/imgsys-fundologin.jpg') }}");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body class="login">
+  <div class="card p-5 shadow-lg animated fadeIn" style="max-width: 450px; border-radius: 20px; width: 100%;">
+    <h3 class="text-center fw-bold mb-3">SysEmpréstimos</h3>
+    <p class="text-center text-muted mb-4">Faça login para continuar</p>
+
+    <!-- Exibir mensagens de erro (Flash) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('login') }}" method="POST">
+      <div class="form-group form-floating-label mb-3">
+        <input id="email" name="email" type="email" class="form-control input-border-bottom" placeholder="Email"
+          required>
+      </div>
+      <div class="form-group form-floating-label mb-4">
+        <input id="password" name="senha" type="password" class="form-control input-border-bottom" placeholder="Senha"
+          required>
+      </div>
+      <div class="form-action mb-3">
+        <button type="submit" class="btn btn-primary btn-rounded btn-login w-100">Entrar</button>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>

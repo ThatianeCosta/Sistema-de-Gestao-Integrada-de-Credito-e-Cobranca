@@ -1,0 +1,181 @@
+{% extends 'estrutura/base.html' %}
+
+{% block conteudo %}
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Usuários</h3>
+        </div>
+        <div class="ms-md-auto py-2 py-md-0">
+            <a href="{{ url_for('usuarios_cadastrar') }}" class="btn btn-primary btn-round">Novo Usuário</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="card-title">Listagem de Usuários</div>
+                        <div class="input-group w-25">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            <input type="text" id="filtro-usuarios" class="form-control"
+                                placeholder="Pesquisar usuário...">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table id="basic-datatables" class="display table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Cargo</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                <tr>
+                                    <td>{{ usuario.nome }} {{ usuario.sobrenome }}</td>
+                                    <td>{{ usuario.email }}</td>
+                                    <td>{{ usuario.role.nome }}</td>
+                                    <td>
+                                        {% if usuario.ativo %}
+                                        <span class="badge badge-success">Ativo</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Inativo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="form-button-action">
+                                            <button type="button" data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal{{ usuario.id }}"
+                                                class="btn btn-link btn-primary btn-lg" title="Editar">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button type="button" data-bs-toggle="modal"
+                                                data-bs-target="#deleteUserModal{{ usuario.id }}"
+                                                class="btn btn-link btn-danger" title="Excluir">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal Editar Usuário -->
+                                <div class="modal fade" id="editUserModal{{ usuario.id }}" tabindex="-1"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Editar Usuário</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ url_for('usuarios_editar', id=usuario.id) }}"
+                                                method="POST">
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label>Nome</label>
+                                                        <input type="text" name="campoNome" class="form-control"
+                                                            value="{{ usuario.nome }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Sobrenome</label>
+                                                        <input type="text" name="campoSobrenome" class="form-control"
+                                                            value="{{ usuario.sobrenome }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="email" name="campoEmail" class="form-control"
+                                                            value="{{ usuario.email }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Telefone</label>
+                                                        <input type="text" name="campoTelefone"
+                                                            class="form-control mascara-telefone-celular"
+                                                            value="{{ usuario.telefone }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Cargo</label>
+                                                        <select name="cargoId" class="form-select" required>
+                                                            {% for cargo in cargos %}
+                                                            <option value="{{ cargo.id }}" {% if
+                                                                usuario.role_id==cargo.id %}selected{% endif %}>{{
+                                                                cargo.nome }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Excluir Usuário -->
+                                <div class="modal fade" id="deleteUserModal{{ usuario.id }}" tabindex="-1"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Excluir Usuário</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="mb-0">Tem certeza que deseja excluir o usuário <strong>{{
+                                                        usuario.nome }} {{ usuario.sobrenome }}</strong>?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cancelar</button>
+                                                <a href="{{ url_for('usuarios_excluir', id=usuario.id) }}"
+                                                    class="btn btn-danger">Excluir</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        var table = $("#basic-datatables").DataTable({
+            "ordering": false,
+            "pageLength": 5,
+            "lengthChange": false,
+            "dom": 'rt<"d-flex justify-content-between pt-2"ip>',
+            "language": {
+                "zeroRecords": "Nenhum registro encontrado",
+                "info": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Próximo"
+                }
+            }
+        });
+
+        $('#filtro-usuarios').on('keyup', function () {
+            table.search($(this).val()).draw();
+        });
+    });
+</script>
+{% endblock scripts %}
