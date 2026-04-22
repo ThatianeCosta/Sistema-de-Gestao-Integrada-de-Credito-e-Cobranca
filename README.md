@@ -3,6 +3,13 @@
 ### 📝 Visão Geral
 Este sistema foi desenvolvido para centralizar e automatizar a administração de carteiras de crédito. A plataforma oferece fluxos de trabalho otimizados: uma visão de **Gerente** (focada em análise de KPIs e recuperação de ativos) e uma área de **Cliente** (focada em transparência financeira). O sistema integra visualizações analíticas em tempo real e suporte nativo ao **Modo Escuro**.
 
+
+
+
+
+https://github.com/user-attachments/assets/263728c4-373c-4e54-bdb0-8b8752feffe5
+
+
 ### 🎯 Objetivos do Projeto
 O propósito é fornecer uma infraestrutura que simplifica operações financeiras detalhadas. Através da automação de encargos, dashboards interativos e uma régua de cobrança via WhatsApp, o projeto visa maximizar a eficiência operacional e reduzir a inadimplência, mantendo uma experiência de usuário moderna.
 
