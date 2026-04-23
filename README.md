@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/263728c4-373c-4e54-bdb0-8b8752feffe5
 O propósito é fornecer uma infraestrutura que simplifica operações financeiras detalhadas. Através da automação de encargos, dashboards interativos e uma régua de cobrança via WhatsApp, o projeto visa maximizar a eficiência operacional e reduzir a inadimplência, mantendo uma experiência de usuário moderna.
 
 ### 🗄️ Bases de Dados
-O projeto utiliza um banco de dados relacional para persistência de usuários, cargos e configurações do sistema.
+O projeto utiliza um banco de dados relacional para persistência de usuários, cargos e configurações do sistema
 *   **Sincronização Automatizada:** O sistema possui integração total entre a interface web e o banco de dados. Ao cadastrar um novo usuário pelo site, o **ID é gerado automaticamente pelo banco (Auto-increment)** e os dados são persistidos via SQLAlchemy.
 *   **DBeaver:** Utilizado como cliente de banco de dados para visualização em tempo real dos registros, estruturação de tabelas e execução de queries de auditoria para validar a integridade dos cálculos financeiros.
 
