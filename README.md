@@ -7,7 +7,7 @@ Este sistema foi desenvolvido para centralizar e automatizar a administração d
 
 
 
-https://github.com/user-attachments/assets/263728c4-373c-4e54-bdb0-8b8752feffe5
+
 
 
 ### 🎯 Objetivos do Projeto
