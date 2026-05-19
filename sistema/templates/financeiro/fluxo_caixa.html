@@ -22,8 +22,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Total Entradas</p>
-                                <h4 class="card-title text-success">R$ {{ resumo.total_entradas }}</h4>
+                                <p class="card-category">Total Recebido</p>
+                                <h4 class="card-title text-success">R$ {{ resumo.total_pago }}</h4>
                             </div>
                         </div>
                     </div>
@@ -41,8 +41,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Total Saídas</p>
-                                <h4 class="card-title text-danger">R$ {{ resumo.total_saidas }}</h4>
+                                <p class="card-category">Total Emprestado</p>
+                                <h4 class="card-title text-danger">R$ {{ resumo.valor_contratado }}</h4>
                             </div>
                         </div>
                     </div>
@@ -60,8 +60,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Saldo Líquido</p>
-                                <h4 class="card-title text-primary">R$ {{ resumo.saldo_liquido }}</h4>
+                                <p class="card-category">Saldo a Receber</p>
+                                <h4 class="card-title text-primary">R$ {{ resumo.saldo_devedor }}</h4>
                             </div>
                         </div>
                     </div>
@@ -93,32 +93,32 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-round">
-                <div class="card-header">
-                    <div class="d-flex align-items-center justify-content-between">
+                <div class="card-header card-header-fluxo pb-2">
+                    <div class="d-flex align-items-center justify-content-between" style="margin-bottom: 0 !important;">
                         <div class="card-title">Movimentações por Cliente</div>
-                        <div class="input-group w-25">
+                        <div class="input-group w-25 mb-0">
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
                             <input type="text" id="filtro-fluxo" class="form-control"
                                 placeholder="Pesquisar cliente...">
                         </div>
                     </div>
                 </div>
-                <div class="card-body pt-0">
-                    <div class="table-responsive">
-                        <table id="tabela-fluxo" class="display table table-striped table-hover">
-                            <thead class="thead-dark">
+                <div class="card-body card-body-no-horizontal-padding p-0">
+                    <div class="table-responsive" style="padding: 0 !important; margin: 0 !important;">
+                        <table id="tabela-fluxo" class="display table table-striped table-hover mt-0 mb-0 border-0"> 
+                            <thead class="thead-custom-fluxo"> <!-- Adicionada nova classe para o cabeçalho -->
                                 <tr>
                                     <th>Cliente</th>
                                     <th>Entradas (R$)</th>
                                     <th>Saídas (R$)</th>
                                     <th>Saldo (R$)</th>
                                     <th data-toggle="tooltip" data-placement="top"
-                                        title="Lucro Total acumulado de todas as parcelas que já foram pagas.">
-                                        Lucro Acumulado (R$) <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                        title="Soma total dos juros e encargos recebidos de todas as parcelas quitadas até o momento.">
+                                        Juros Recebidos (R$) <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
                                     </th>
                                     <th data-toggle="tooltip" data-placement="top"
-                                        title="Indica se o saldo do cliente (Entradas - Saídas) é Positivo, Negativo ou Neutro.">
-                                        Status <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
+                                        title="Indica se o capital emprestado já foi totalmente recuperado (Liquidado) ou se ainda há saldo devedor (Em Aberto).">
+                                        Situação do Capital <i class="fas fa-info-circle fa-xs text-muted ms-1"></i>
                                     </th>
                                 </tr>
                             </thead>
@@ -131,12 +131,10 @@
                                     <td class="fw-bold">{{ item.saldo }}</td>
                                     <td class="fw-bold text-info">R$ {{ item.lucro_acumulado }}</td>
                                     <td>
-                                        {% if item.status == 'Positivo' %}
-                                        <span class="badge badge-sober-success">Positivo</span>
-                                        {% elif item.status == 'Negativo' %}
-                                        <span class="badge badge-sober-danger">Negativo</span>
+                                        {% if item.status == 'Liquidado' %}
+                                        <span class="badge badge-sober-success">Liquidado</span>
                                         {% else %}
-                                        <span class="badge badge-sober-warning">Neutro</span>
+                                        <span class="badge badge-sober-danger">Em Aberto</span>
                                         {% endif %}
                                     </td>
                                 </tr>
