@@ -38,12 +38,12 @@
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
                                 <p class="card-category">
-                                    Total Entradas
+                                    Total Pago
                                     <i class="fas fa-info-circle fa-xs text-muted ms-1" data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Soma de todos os valores que você já pagou (parcelas e taxas)."></i>
+                                        title="Soma de todos os valores e parcelas que você já pagou até agora."></i>
                                 </p>
-                                <h4 class="card-title text-primary">{{ resumo.total_entradas }}</h4>
+                                <h4 class="card-title text-primary">{{ resumo.total_pago }}</h4>
                             </div>
                         </div>
                     </div>
@@ -61,12 +61,12 @@
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
                                 <p class="card-category">
-                                    Total Saídas
+                                    Valor do Empréstimo
                                     <i class="fas fa-info-circle fa-xs text-muted ms-1" data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Valor total do capital que foi liberado para você no início."></i>
+                                        title="Valor total do capital que foi contratado e liberado para você."></i>
                                 </p>
-                                <h4 class="card-title text-danger">{{ resumo.total_saidas }}</h4>
+                                <h4 class="card-title text-danger">{{ resumo.valor_contratado }}</h4>
                             </div>
                         </div>
                     </div>
@@ -84,12 +84,12 @@
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
                                 <p class="card-category">
-                                    Saldo Líquido
+                                    Saldo Devedor
                                     <i class="fas fa-info-circle fa-xs text-muted ms-1" data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Diferença entre o que você pagou e o que recebeu. Indica o quanto falta amortizar."></i>
+                                        title="Valor total que ainda falta pagar para quitar o empréstimo."></i>
                                 </p>
-                                <h4 class="card-title text-success">{{ resumo.saldo_liquido }}</h4>
+                                <h4 class="card-title text-success">{{ resumo.saldo_devedor }}</h4>
                             </div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                                     <td>{{ mov.data_pagamento if mov.data_pagamento else mov.vencimento }}</td>
                                     <td class="fw-bold text-muted">{{ mov.descricao }}</td>
                                     <td>Pagamento</td> <!-- Tipo fixo para este exemplo -->
-                                    <td class="fw-bold">R$ {{ mov.valor }}</td>
+                                    <td class="fw-bold">R$ {{ mov.valor_atualizado_formatado }}</td>
                                     <td class="text-center">
                                         <!-- Badge colorido baseado no status -->
                                         {% if mov.status == 'Pago' %}
