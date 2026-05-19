@@ -57,6 +57,12 @@
     /* Azul */
     --cor-cliente-historico-antecipado-borda: #124D74;
     /* Borda Azul */
+    --cor-cliente-historico-pago-atrasado: #FFC107; /* Amarelo para pago com atraso */
+    --cor-cliente-historico-pago-atrasado-borda: #E0A800; /* Borda Amarelo Escuro */
+    --cor-cliente-historico-futuro: #A9D9F2; /* Azul claro para parcela futura */
+    --cor-cliente-historico-futuro-borda: #8CCEEB; /* Borda Azul claro */
+
+    /* Borda Azul */
     --cor-cliente-historico-em-dia: #4EA60F;
     /* Verde Esmeralda */
     --cor-cliente-historico-em-dia-borda: #3D820B;
@@ -74,6 +80,58 @@
     background-color: #F8F8F8; /* Cinza clarinho para o fundo do gráfico */
     border-radius: 8px; /* Bordas arredondadas para harmonizar com o tema */
     padding: 15px; /* Adiciona um pouco de padding para o gráfico não colar nas bordas */
+}
+
+/* --- 2. CABEÇALHOS GLOBAIS DE TABELAS --- */
+[class*="card-header-"] {
+    background-color: #E0F2F7 !important;
+    border-bottom: 4px solid #165F8C !important;
+    padding-bottom: 10px !important;
+}
+
+[class*="card-header-"] .card-title {
+    color: #165F8C !important;
+    font-weight: bold !important;
+}
+
+[class*="thead-custom-"] th {
+    background-color: rgba(22, 95, 140, 0.08) !important;
+    color: #165F8C !important;
+    font-weight: bold;
+    border-bottom: 2px solid #165F8C !important;
+}
+
+/* Widget de Data/Hora no Header */
+.system-status-widget {
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.08); /* Fundo sutil para o modo claro */
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 50px; /* Pílula arredondada */
+    padding: 6px 15px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Garante que não quebre a linha */
+}
+
+.system-status-widget .status-item-date,
+.system-status-widget .status-item-time {
+    display: flex;
+    align-items: center;
+    color: #444444; /* Texto cinza escuro para leitura perfeita */
+}
+
+.system-status-widget .status-divisor {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.15);
+    margin: 0 10px; /* Espaçamento entre data e hora */
+}
+
+/* Ajuste para o ícone de relógio */
+.system-status-widget .status-item-time .text-info {
+    color: #177dff !important; /* Cor azul padrão do tema para o ícone de info */
 }
 
 /* --- 1. CORES PRINCIPAIS DO TEMA --- */
@@ -219,16 +277,13 @@
     padding-top: 15px;
 }
 
-/* Cada item da legenda (caixinha de cor + texto) */
 .legend-item {
     display: flex;
     align-items: center;
     font-size: 13px;
     color: #333333;
-    /* Cinza escuro/Preto no modo claro */
 }
 
-/* A caixinha colorida da legenda */
 .legend-color-box {
     width: 15px;
     height: 15px;
@@ -250,6 +305,11 @@
 .legend-parcela-atual {
     background-color: var(--cor-cliente-historico-atual);
     border: 1px dashed var(--cor-cliente-historico-atual-borda);
+}
+
+.legend-futuro {
+    background-color: var(--cor-cliente-historico-futuro);
+    border: 1px solid var(--cor-cliente-historico-futuro-borda);
 }
 
 .legend-pendente {
@@ -424,12 +484,79 @@ body.dark-mode .page-inner {
     color: #EEEEEE !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
 
-    /* Overrides de Cores para Gráficos no Modo Escuro */
+/* --- CORREÇÃO: FLAT CSS PARA COMPATIBILIDADE (MODO ESCURO) --- */
+body.dark-mode .card-header-fluxo,
+body.dark-mode .card-header-clientes,
+body.dark-mode .card-header-relatorios,
+body.dark-mode .card-header-historico,
+body.dark-mode .card-header-usuarios,
+body.dark-mode .card-header-taxas {
+    background-color: #1E3A8A !important; /* Azul marinho para o título no escuro */
+    border-bottom: 4px solid #1572E8 !important; /* Linha mais marcante no modo escuro para destaque */
+    padding-bottom: 10px !important;
+}
+
+body.dark-mode .card-header-fluxo .card-title,
+body.dark-mode .card-header-clientes .card-title,
+body.dark-mode .card-header-relatorios .card-title,
+body.dark-mode .card-header-historico .card-title,
+body.dark-mode .card-header-usuarios .card-title,
+body.dark-mode .card-header-taxas .card-title {
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .thead-custom-fluxo th,
+body.dark-mode .thead-custom-clientes th,
+body.dark-mode .thead-custom-relatorios th,
+body.dark-mode .thead-custom-historico th,
+body.dark-mode .thead-custom-usuarios th,
+body.dark-mode .thead-custom-taxas th {
+    background-color: #111827 !important;
+    color: #FFFFFF !important;
+    border-bottom: 2px solid #1E3A8A !important;
+}
+
+/* Reset Global de Textos no Modo Escuro */
+body.dark-mode h2, body.dark-mode h3, body.dark-mode h4:not(.user-box h4),
+body.dark-mode h6, body.dark-mode .card-title, body.dark-mode .card-category,
+body.dark-mode .text-muted, body.dark-mode .op-7, body.dark-mode label,
+body.dark-mode .indicador-label, body.dark-mode .legend-item,
+body.dark-mode .profile-username .fw-bold, body.dark-mode .progress-status span,
+body.dark-mode .progress-status b, body.dark-mode .card-body p,
+body.dark-mode .card-body span:not(.badge), body.dark-mode .u-text h4,
+body.dark-mode .system-status-widget .status-item-date,
+body.dark-mode .system-status-widget .status-item-time {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .system-status-widget {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-mode .system-status-widget .status-divisor { background-color: rgba(255, 255, 255, 0.3) !important; }
+
+body.dark-mode {
+
+    /* Widget de Status do Sistema no Modo Escuro */
+    .system-status-widget {
+        background-color: rgba(255, 255, 255, 0.15) !important; /* Fundo sutil mais claro */
+        border: 1px solid rgba(255, 255, 255, 0.3) !important; /* Borda mais visível */
+    }
+    .system-status-widget .status-item-date,
+    .system-status-widget .status-item-time {
+        color: #FFFFFF !important; /* Texto branco puro */
+    }
+    .system-status-widget .status-divisor {
+        background-color: rgba(255, 255, 255, 0.3) !important; /* Divisor branco */
+    }
+
     --cor-grafico-texto: #FFFFFF !important;
-    /* Branco Puro para facilitar a visualização */
     --cor-grafico-grid: rgba(255, 255, 255, 0.2) !important;
-    --cor-grafico-fundo: #111827 !important; /* Fundo escuro para gráficos no modo escuro */
+    --cor-grafico-fundo: #111827 !important;
     /* Linhas brancas nítidas e visíveis */
     --cor-gerente-previsao-linha: #165F8C;
     /* Ciano Neon */
@@ -448,45 +575,17 @@ body.dark-mode .chart-container {
     background-color: var(--cor-grafico-fundo);
 }
 
-/* --- FUNDO DO MODAL/CARD --- */
 body.dark-mode .card {
     background-color: #1F2937 !important;
-    /* Cinza-escuro neutro */
     border: 1px solid #374151 !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Fundo específico para a área do gráfico de previsão (mais escuro que o card) */
 body.dark-mode #chartPrevisaoEntradas {
     background-color: #111827 !important;
     border-radius: 8px;
 }
 
-/* --- ÁREA DE TÍTULO E TEXTOS --- */
-body.dark-mode h2,
-body.dark-mode h3,
-body.dark-mode h4:not(.user-box h4),
-body.dark-mode h6,
-body.dark-mode .card-title,
-body.dark-mode .card-category,
-body.dark-mode .text-muted,
-body.dark-mode .op-7,
-body.dark-mode label,
-body.dark-mode .indicador-label,
-body.dark-mode .legend-item,
-body.dark-mode .profile-username .fw-bold,
-body.dark-mode .progress-status span,
-body.dark-mode .progress-status b,
-body.dark-mode .card-body p,
-body.dark-mode .card-body span:not(.badge),
-body.dark-mode .u-text h4 {
-    color: #FFFFFF !important;
-    /* Branco Puro para facilitar a visualização */
-    opacity: 1 !important;
-    /* Garante nitidez total e a cor real no modo escuro */
-}
-
-/* --- CABEÇALHO DA TABELA (Barra de Títulos) --- */
 body.dark-mode .table thead th,
 body.dark-mode .card .table .thead-dark th,
 body.dark-mode .card .table .thead-light th {
@@ -499,25 +598,21 @@ body.dark-mode .card .table .thead-light th {
     text-transform: uppercase;
 }
 
-/* Linha Ímpar (mais escura) */
 body.dark-mode .table tbody tr:nth-of-type(odd),
 body.dark-mode .table tbody tr:nth-of-type(odd)>td,
-/* Mantém a cor do fundo */
 body.dark-mode .table tbody tr:nth-of-type(odd)>th,
-/* Mantém a cor do fundo */
 body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
     background-color: #111827 !important;
 }
 
-/* Linha Par (mais clara) */
+body.dark-mode .search-results-container { background-color: #1f2937 !important; border-color: #374151 !important; }
+body.dark-mode .search-result-item { color: #EEEEEE !important; border-bottom-color: #374151; }
+
 body.dark-mode .table tbody tr:nth-of-type(even),
 body.dark-mode .table tbody tr:nth-of-type(even)>td,
-/* Mantém a cor do fundo */
 body.dark-mode .table tbody tr:nth-of-type(even)>th,
-/* Mantém a cor do fundo */
 body.dark-mode .table-striped>tbody>tr:nth-of-type(even) {
     background-color: #1F2937 !important;
-    /* Corrigido para o cinza-escuro neutro */
 }
 
 /* Texto das Linhas (Todas as Tabelas) */
@@ -528,11 +623,9 @@ body.dark-mode .table th {
     border-bottom: 1px solid #374151 !important;
 }
 
-/* --- DESTAQUE DO VALOR (Pílulas) --- */
 body.dark-mode .badge-primary,
 body.dark-mode .badge-info {
     background-color: #1D4ED8 !important;
-    /* Azul cobalt vibrante */
     color: #FFFFFF !important;
     border-radius: 50px !important;
     padding: 5px 12px !important;
@@ -548,81 +641,44 @@ body.dark-mode .btn-link.btn-info i {
     /* Branco Puro */
 }
 
-/* --- AJUSTES EXTRAS PARA SIDEBAR E TOPBAR --- */
 body.dark-mode .sidebar,
 body.dark-mode .logo-header,
 body.dark-mode .main-header-logo {
     background-color: #165F8C !important;
-    /* Azul-marinho profundo na Sidebar e área da Logo */
 }
 
 body.dark-mode .main-header,
 body.dark-mode .navbar-header {
     background-color: #111827 !important;
-    /* Cinza profundo neutro no Topo */
     border-bottom: 1px solid #374151 !important;
 }
 
-body.dark-mode #icone-tema {
-    color: #EEEEEE !important;
-}
-
-/* --- MODAL DE PERFIL (DROPDOWN - ÁREA CLARA) --- */
+/* --- 7. MODAIS E DROPDOWNS --- */
 body.dark-mode .dropdown-user {
     background-color: #ffffff !important;
     border: 1px solid #ebedf2 !important;
 }
 
-body.dark-mode .dropdown-user .user-box h4 {
-    color: #1E3A8A !important;
-    /* Azul Marinho Profundo para o nome no modal */
-}
-
+body.dark-mode .dropdown-user .user-box h4 { color: #1E3A8A !important; }
 body.dark-mode .dropdown-user .user-box p.text-muted,
-body.dark-mode .dropdown-user .dropdown-item {
-    color: #666666 !important;
-    /* Cinza escuro para os demais textos */
-}
+body.dark-mode .dropdown-user .dropdown-item { color: #666666 !important; }
 
-/* --- FOOTER (RODAPÉ) NO MODO ESCURO --- */
-body.dark-mode .footer {
-    background-color: #111827 !important;
-    border-top: 1px solid #374151 !important;
-    color: #EEEEEE !important;
-}
+body.dark-mode .footer { background-color: #111827 !important; border-top: 1px solid #374151 !important; color: #EEEEEE !important; }
+body.dark-mode .footer .nav-link, body.dark-mode .footer .copyright, body.dark-mode .footer a { color: #EEEEEE !important; }
 
-body.dark-mode .footer .nav-link,
-body.dark-mode .footer .copyright,
-body.dark-mode .footer a {
-    color: #EEEEEE !important;
-}
+.modal-content { border-radius: 15px !important; }
 
-/* --- MODAIS (Geral) --- */
-.modal-content {
-    border-radius: 15px !important;
-    /* Bordas mais suaves para todos os modais */
-}
-
-/* --- MODAIS NO MODO ESCURO (Mensagens e Notificações) --- */
 body.dark-mode .modal-content {
     background-color: #1F2937 !important;
-    /* Fundo cinza-escuro neutro */
     color: #EEEEEE !important;
-    /* Define a cor do texto principal do modal como branco */
     border: 1px solid #374151 !important;
 }
 
-
-body.dark-mode .modal-header,
-body.dark-mode .modal-footer {
-    border-color: #374151 !important;
-}
-
+body.dark-mode .modal-header, body.dark-mode .modal-footer { border-color: #374151 !important; }
 body.dark-mode .modal-header .modal-title {
     color: #FFFFFF !important;
 }
 
-/* Ajuste para todos os textos dentro do corpo do modal para garantir que fiquem brancos */
 body.dark-mode .modal-body,
 body.dark-mode .modal-body p,
 body.dark-mode .modal-body small,
@@ -698,7 +754,6 @@ body.dark-mode .btn-close {
     z-index: 10000;
     padding: 20px 15px;
     animation: bounceInUp 0.8s;
-    /* Usa animação do sistema */
 }
 
 .btn-fechar-atraso {
@@ -725,114 +780,104 @@ body.dark-mode .btn-close {
     font-size: 20px;
 }
 
-/* Ajuste para o Modo Escuro */
 body.dark-mode .card-alerta-atraso {
     background-color: #1F2937 !important;
     border-color: #D97904 !important;
 }
 
-body.dark-mode .card-alerta-atraso p {
-    color: #EEEEEE !important;
-}
-
-/* 4. Garante que a tabela tente usar apenas o espaço disponível */
-#historicoPagamentosTable {
-    width: 100% !important;
-}
-
-/* --- CAMPOS DESABILITADOS/READONLY NO MODO ESCURO (Página Minha Conta) --- */
+/* --- 11. CAMPOS E ALERTAS MODO ESCURO --- */
 body.dark-mode .form-control:disabled,
 body.dark-mode .form-control[readonly] {
     background-color: #374151 !important;
-    /* Fundo cinza suave */
     color: #FFFFFF !important;
-    /* Letras brancas para contraste */
     border-color: #4B5563 !important;
     opacity: 1 !important;
-    /* Remove o efeito esmaecido do Bootstrap */
 }
 
-/* --- ALERTAS NO MODO ESCURO --- */
 body.dark-mode .alert,
 body.dark-mode .alert-info,
 body.dark-mode .modal-body .alert-info,
 body.dark-mode .bg-light:not(.dropdown-user) {
     background-color: #165F8C !important;
-    /* Azul marinho profundo para contraste */
     color: #ffffff !important;
-    /* Texto branco nítido */
     border: 1px solid #3b82f6 !important;
-    /* Borda azul vibrante para destaque */
 }
 
-/* Garante que o título e a mensagem das notificações (toasts) também fiquem brancos no modo escuro */
 body.dark-mode .alert [data-notify="title"],
 body.dark-mode .alert [data-notify="message"] {
     color: #ffffff !important;
     opacity: 1 !important;
 }
 
-/* Estilo para Alerta de Atenção (Warning) no Modo Escuro */
 body.dark-mode .alert-warning,
 body.dark-mode .modal-body .alert-warning {
     background-color: #423212 !important;
-    /* Fundo marrom escuro/fechado */
     color: #ffda6a !important;
-    /* Texto amarelo claro para leitura */
     border: 1px dashed #ffc107 !important;
-    /* Borda amarela tracejada */
 }
 
-/* --- SISTEMA DE PESQUISA (RESULTADOS AUTOCOMPLETE) --- */
-.nav-search .input-group {
-    position: relative;
+/* --- 12. ÁREA DE DETALHAMENTO FINANCEIRO --- */
+body:not(.dark-mode) .card .table tbody tr.detail-row,
+body:not(.dark-mode) .card .table tbody tr.detail-row > td {
+    background-color: #ebf5fb !important;
+    --bs-table-bg: #ebf5fb !important;
 }
 
-.search-results-container {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    border: 1px solid #ebedf2;
-    border-radius: 0 0 5px 5px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    z-index: 9999;
-    max-height: 280px;
-    overflow-y: auto;
-    display: none;
+body:not(.dark-mode) .detail-row h6.text-primary { color: #165F8C !important; font-weight: bold !important; }
+body:not(.dark-mode) .table-detalhe-interna thead.thead-detalhes-interna tr th { background-color: #165F8C !important; --bs-table-bg: #165F8C !important; color: #ffffff !important; }
+
+body.dark-mode .card .table tbody tr.detail-row,
+body.dark-mode .card .table tbody tr.detail-row > td {
+    background-color: #0f172a !important;
+    --bs-table-bg: #0f172a !important;
+    color: #eeeeee !important;
 }
 
-body.dark-mode .search-results-container {
-    background-color: #1f2937 !important;
-    border-color: #374151 !important;
+body.dark-mode .detail-row h6.text-primary { color: #ffffff !important; font-weight: bold !important; }
+
+body.dark-mode .detail-row .table-detalhe-interna thead.thead-detalhes-interna tr th {
+    background-color: #48ABF7 !important;
+    --bs-table-bg: #48ABF7 !important;
+    color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
-.search-result-item {
-    display: block;
-    padding: 10px 15px;
-    color: #575962;
-    text-decoration: none !important;
-    font-size: 13px;
-    border-bottom: 1px solid #f1f1f1;
-    transition: background 0.2s;
+/* --- 13. ÁREA DE RELATÓRIOS (ANÁLISE FINANCEIRA) --- */
+.relatorio-detail-row,
+.table-hover > tbody > tr.relatorio-detail-row:hover > * {
+    background-color: #ebf5fb !important;
+    --bs-table-bg: #ebf5fb !important;
 }
 
-.search-result-item:hover {
-    background-color: #f8f9fa;
-    color: #165F8C;
+.border-relatorio-titulo { border-bottom: 2px solid #165F8C !important; }
+
+body.dark-mode .relatorio-detail-row,
+body.dark-mode .relatorio-detail-row > td,
+body.dark-mode .table-hover > tbody > tr.relatorio-detail-row:hover > * {
+    background-color: #0f172a !important;
+    --bs-table-bg: #0f172a !important;
 }
 
-body.dark-mode .search-result-item {
-    color: #EEEEEE !important;
-    border-bottom-color: #374151;
+body.dark-mode .relatorio-detail-row h6.text-primary { color: #ffffff !important; }
+body.dark-mode .relatorio-detail-row .card { background-color: #1e293b !important; border-color: #334155 !important; }
+
+.card-analise-item { border-left: 5px solid !important; transition: transform 0.2s ease; }
+.card-analise-item:hover { transform: translateY(-3px); }
+
+body.dark-mode .relatorio-detail-row .text-success { color: #31CE36 !important; }
+body.dark-mode .relatorio-detail-row .text-warning { color: #FFAD46 !important; }
+body.dark-mode .relatorio-detail-row .text-danger { color: #F25961 !important; }
+body.dark-mode .relatorio-detail-row .text-info { color: #48ABF7 !important; }
+
+body.dark-mode .relatorio-detail-row .card-category { color: #a1a1a1 !important; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+
+
+body.dark-mode .card-alerta-atraso p {
+    color: #FFFFFF !important;
 }
 
-body.dark-mode .search-result-item:hover {
-    background-color: #374151 !important;
-}
-
-/* --- PONTOS DE LEGENDA PARA O GRÁFICO DE PROGRESSO --- */
 .legend-dot-pago,
 .legend-dot-restante {
     width: 10px;
@@ -842,10 +887,5 @@ body.dark-mode .search-result-item:hover {
     margin-right: 5px;
 }
 
-.legend-dot-pago {
-    background-color: #4EA60F; /* Verde */
-}
-
-.legend-dot-restante {
-    background-color: #F2C166; /* Pêssego */
-}
+.legend-dot-pago { background-color: #4EA60F; }
+.legend-dot-restante { background-color: #F2C166; }
