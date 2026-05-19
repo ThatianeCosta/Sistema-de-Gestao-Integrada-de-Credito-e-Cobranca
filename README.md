@@ -4,12 +4,11 @@
 Este sistema foi desenvolvido para centralizar e automatizar a administração de carteiras de crédito. A plataforma oferece fluxos de trabalho otimizados: uma visão de **Gerente** (focada em análise de KPIs e recuperação de ativos) e uma área de **Cliente** (focada em transparência financeira). O sistema integra visualizações analíticas em tempo real e suporte nativo ao **Modo Escuro**.
 
 
-
-
 https://github.com/user-attachments/assets/eafc7cdf-e469-496f-8e1e-ad69b776acf6
 
 
 
+https://github.com/user-attachments/assets/7a59c6c3-6bf9-4e3c-87d0-07af853db1b2
 
 
 
