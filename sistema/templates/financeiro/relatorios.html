@@ -2,209 +2,261 @@
 
 {% block conteudo %}
 <div class="page-inner">
-    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-        <div>
+<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        {% if session['perfil'] == 'gerente' %}
             <h3 class="fw-bold mb-3">Relatórios Financeiros</h3>
             <h6 class="op-7 mb-2">Análise de crédito e perfil de risco por cliente.</h6>
-        </div>
+        {% else %}
+            <h3 class="fw-bold mb-3">Meu Perfil de Crédito</h3>
+            <h6 class="op-7 mb-2">Acompanhe seu score e análise de limite disponível.</h6>
+        {% endif %}
     </div>
+</div>
 
-    <!-- Cards de Resumo (KPIs) -->
-    <div class="row">
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-icon">
-                            <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                <i class="fas fa-file-contract"></i>
-                            </div>
-                        </div>
-                        <div class="col col-stats ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <p class="card-category">Análises Realizadas</p>
-                                <h4 class="card-title">{{ total_analisados }}</h4>
-                            </div>
+<!-- Cards de Resumo (KPIs) -->
+<div class="row">
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center {% if session['perfil'] == 'gerente' %}icon-primary{% else %}icon-secondary{% endif %} bubble-shadow-small">
+                            <i class="{% if session['perfil'] == 'gerente' %}fas fa-file-contract{% else %}fas fa-calendar-check{% endif %}"></i>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-icon">
-                            <div class="icon-big text-center icon-danger bubble-shadow-small">
-                                <i class="fas fa-exclamation-circle"></i>
-                            </div>
-                        </div>
-                        <div class="col col-stats ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <p class="card-category">Alto Risco</p>
-                                <h4 class="card-title">{{ clientes_alto_risco }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-icon">
-                            <div class="icon-big text-center icon-success bubble-shadow-small">
-                                <i class="fas fa-hand-holding-usd"></i>
-                            </div>
-                        </div>
-                        <div class="col col-stats ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <p class="card-category">Limite Total Sugerido</p>
-                                <h4 class="card-title">R$ {{ total_limite }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-icon">
-                            <div class="icon-big text-center icon-info bubble-shadow-small">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                        <div class="col col-stats ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <p class="card-category">Score Médio</p>
-                                <h4 class="card-title">{{ media_score }}</h4>
-                            </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            {% if session['perfil'] == 'gerente' %}
+                            <p class="card-category">Análises Realizadas</p>
+                            <h4 class="card-title">{{ total_analisados }}</h4>
+                            {% else %}
+                            <p class="card-category">Data da Análise</p>
+                            <h4 class="card-title">{{ relatorios[0].ultima_analise if relatorios else 'N/A' }}</h4>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-round">
-                <div class="card-header">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="card-title">Relatórios por Cliente</div>
-                        <!-- Filtro Simples -->
-                        <div class="input-group w-25">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            <input type="text" class="form-control" id="filtro-relatorios"
-                                placeholder="Filtrar cliente...">
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center {% if session['perfil'] == 'gerente' %}icon-danger{% else %}icon-primary{% endif %} bubble-shadow-small">
+                            <i class="{% if session['perfil'] == 'gerente' %}fas fa-exclamation-circle{% else %}fas fa-tachometer-alt{% endif %}"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            {% if session['perfil'] == 'gerente' %}
+                            <p class="card-category">Clientes Alto Risco</p>
+                            <h4 class="card-title">{{ clientes_alto_risco }}</h4>
+                            {% else %}
+                            <p class="card-category">Meu Score de Crédito</p>
+                            <h4 class="card-title">{{ relatorios[0].score if relatorios else 'N/A' }}</h4>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Nome do Cliente</th>
-                                    <th>Risco Calculado</th>
-                                    <th>Data da Análise</th>
-                                    <th class="text-end">Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in relatorios %}
-                                <tr data-bs-toggle="collapse" data-bs-target="#relatorio-{{ item.id }}"
-                                    style="cursor: pointer;" aria-expanded="false">
-                                    <td class="fw-bold text-primary">{{ item.cliente }}</td>
-                                    <td>
-                                        {% if item.risco == 'Baixo' %}
-                                        <span class="badge badge-success">Baixo</span>
-                                        {% elif item.risco == 'Médio' %}
-                                        <span class="badge badge-warning">Médio</span>
-                                        {% else %}
-                                        <span class="badge badge-danger">Alto</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ item.ultima_analise }}</td>
-                                    <td class="text-end"><i class="fas fa-chevron-down"></i></td>
-                                </tr>
-                                <!-- Detalhes do Relatório (Collapse) -->
-                                <tr id="relatorio-{{ item.id }}" class="collapse bg-light">
-                                    <td colspan="4">
-                                        <div class="p-4">
-                                            <h5 class="fw-bold border-bottom pb-2 mb-3">Resumo da Análise Financeira
-                                            </h5>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="card card-stats card-round border">
-                                                        <div class="card-body">
-                                                            <p class="card-category">Score de Crédito</p>
-                                                            <h3 class="card-title text-info">{{ item.score }}</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="card card-stats card-round border">
-                                                        <div class="card-body">
-                                                            <p class="card-category">Limite Sugerido</p>
-                                                            <h3 class="card-title text-success">R$ {{
-                                                                item.limite_sugerido }}</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="card card-stats card-round border">
-                                                        <div class="card-body">
-                                                            <p class="card-category">Perfil</p>
-                                                            <h4 class="card-title">{{ item.risco }} Risco</h4>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="alert alert-secondary mt-3" role="alert">
-                                                <strong>Observação do Analista:</strong> {{ item.obs }}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-success bubble-shadow-small">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            <p class="card-category">Limite Total Sugerido</p>
+                            <h4 class="card-title">R$ {{ total_limite }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center {% if session['perfil'] == 'gerente' %}icon-info{% else %}icon-warning{% endif %} bubble-shadow-small">
+                            <i class="{% if session['perfil'] == 'gerente' %}fas fa-chart-line{% else %}fas fa-shield-alt{% endif %}"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            {% if session['perfil'] == 'gerente' %}
+                            <p class="card-category">Score Médio</p>
+                            <h4 class="card-title">{{ media_score }}</h4>
+                            {% else %}
+                            <p class="card-category">Perfil de Risco</p>
+                            <h4 class="card-title">{{ relatorios[0].risco if relatorios else 'N/A' }}</h4>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-round">
+            <div class="card-header card-header-relatorios pb-2">
+                <div class="d-flex align-items-center justify-content-between" style="margin-bottom: 0 !important;">
+                    <div class="card-title">
+                        {% if session['perfil'] == 'gerente' %}
+                            Relatórios por Cliente
+                        {% else %}
+                            Meu Relatório
+                        {% endif %}
+                    </div>
+                    <!-- Filtro Simples -->
+                    {% if session['perfil'] == 'gerente' %}
+                    <div class="input-group w-25 mb-0">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input type="text" class="form-control" id="filtro-relatorios"
+                            placeholder="Filtrar cliente...">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body card-body-no-horizontal-padding p-0">
+                <div class="table-responsive" style="padding: 0 !important; margin: 0 !important;">
+                    <table class="table table-hover mt-0 mb-0 border-0">
+                        <thead class="thead-custom-relatorios">
+                            <tr>
+                                <th>Nome do Cliente</th>
+                                <th>Risco Calculado</th>
+                                <th>Data da Análise</th>
+                                <th class="text-end">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in relatorios %}
+                            <tr data-bs-toggle="collapse" data-bs-target="#relatorio-{{ item.id }}"
+                                style="cursor: pointer;" aria-expanded="false">
+                                <td class="fw-bold text-primary">{{ item.cliente }}</td>
+                                <td>
+                                    {% if item.risco == 'Baixo' %}
+                                    <span class="badge badge-success">Baixo</span>
+                                    {% elif item.risco == 'Médio' %}
+                                    <span class="badge badge-warning">Médio</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">Alto</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.ultima_analise }}</td>
+                                <td class="text-end">
+                                    <button class="btn btn-link btn-primary p-0 me-3" title="Imprimir Relatório" 
+                                        onclick="notificarSucesso('Download Realizado', 'O relatório foi gerado com sucesso!'); event.stopPropagation();">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <i class="fas fa-chevron-down"></i>
+                                </td>
+                            </tr>
+                            <!-- Detalhes do Relatório (Collapse) -->
+                            <tr id="relatorio-{{ item.id }}" class="collapse relatorio-detail-row">
+                                <td colspan="4">
+                                    <div class="p-4">
+                                        <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-relatorio-titulo">
+                                            <i class="fas fa-chart-pie text-primary me-2" style="font-size: 1.1rem;"></i>
+                                            <h6 class="fw-bold mb-0 text-primary">Resumo da Análise Financeira - {{ item.cliente }}</h6>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="card card-stats card-round border card-analise-item {% if item.score < 400 %}border-danger{% elif item.score < 700 %}border-warning{% else %}border-success{% endif %}">
+                                                    <div class="card-body">
+                                                        <p class="card-category">Score de Crédito</p>
+                                                        <h3 class="card-title {% if item.score < 400 %}text-danger{% elif item.score < 700 %}text-warning{% else %}text-success{% endif %}">
+                                                            <i class="fas fa-tachometer-alt me-1"></i>
+                                                            {{ item.score }}
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="card card-stats card-round border card-analise-item {% if item.limite_sugerido == '0,00' %}border-danger{% else %}border-success{% endif %}">
+                                                    <div class="card-body">
+                                                        <p class="card-category">Limite Sugerido</p>
+                                                        <h3 class="card-title {% if item.limite_sugerido == '0,00' %}text-danger{% else %}text-success{% endif %}">
+                                                            <i class="fas fa-hand-holding-usd me-1"></i>
+                                                            R$ {{ item.limite_sugerido }}
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="card card-stats card-round border card-analise-item 
+                                                    {% if item.risco == 'Baixo' %} border-success 
+                                                    {% elif item.risco == 'Médio' %} border-warning 
+                                                    {% else %} border-danger 
+                                                    {% endif %}">
+                                                    <div class="card-body">
+                                                        <p class="card-category">Perfil</p>
+                                                        <h4 class="card-title 
+                                                            {% if item.risco == 'Baixo' %} text-success 
+                                                            {% elif item.risco == 'Médio' %} text-warning 
+                                                            {% else %} text-danger 
+                                                            {% endif %}">
+                                                            <i class="fas fa-shield-alt me-1"></i>
+                                                            {{ item.risco }} Risco
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-secondary mt-3" role="alert">
+                                            <strong>Observação do Analista:</strong> {{ item.obs }}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 {% endblock conteudo %}
 
 {% block scripts %}
 <script>
-    $(document).ready(function () {
-        $("#filtro-relatorios").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("table tbody tr[data-bs-toggle='collapse']").each(function () {
-                var mainRow = $(this);
-                var detailRow = mainRow.next("tr.collapse");
-                var isMatch = mainRow.text().toLowerCase().indexOf(value) > -1;
+$(document).ready(function () {
+    $("#filtro-relatorios").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("table tbody tr[data-bs-toggle='collapse']").each(function () {
+            var mainRow = $(this);
+            var detailRow = mainRow.next("tr.collapse");
+            var isMatch = mainRow.text().toLowerCase().indexOf(value) > -1;
 
-                if (value.length > 0) {
-                    if (isMatch) {
-                        mainRow.show();
-                        detailRow.addClass('show').css('display', 'table-row');
-                    } else {
-                        mainRow.hide();
-                        detailRow.removeClass('show').css('display', 'none');
-                    }
-                } else {
+            if (value.length > 0) {
+                if (isMatch) {
                     mainRow.show();
-                    detailRow.removeClass('show').css('display', '');
+                    detailRow.addClass('show').css('display', 'table-row');
+                } else {
+                    mainRow.hide();
+                    detailRow.removeClass('show').css('display', 'none');
                 }
-            });
+            } else {
+                mainRow.show();
+                detailRow.removeClass('show').css('display', '');
+            }
         });
     });
+});
 </script>
 {% endblock scripts %}
