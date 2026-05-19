@@ -44,8 +44,15 @@
             <div class="col col-stats ms-3 ms-sm-0">
               <div class="numbers">
                 <p class="card-category">Próxima Parcela</p>
-                <h4 class="card-title">{{ dados_dashboard.proxima_parcela_valor }}</h4>
+                <h4 class="card-title mb-0">R$ {{ dados_dashboard.proxima_parcela_valor }}</h4>
+                <small class="text-muted fw-bold">{{ dados_dashboard.proxima_parcela_data }}</small>
               </div>
+            </div>
+            <div class="col-auto pe-3">
+              <button class="btn btn-warning btn-border btn-round btn-sm fw-bold" 
+                      onclick="notificarSucesso('Download Iniciado', 'O boleto foi gerado e o download começou!');">
+                <i class="fas fa-print me-1"></i> Imprimir
+              </button>
             </div>
           </div>
         </div>
@@ -153,6 +160,10 @@
               <span>Pagamento Antecipado</span>
             </div>
             <div class="legend-item">
+              <span class="legend-color-box legend-futuro"></span>
+              <span>Parcela Futura</span>
+            </div>
+            <div class="legend-item">
               <span class="legend-color-box legend-pago-em-dia"></span>
               <span>Pago em Dia</span>
             </div>
@@ -184,7 +195,7 @@
       <i class="fas fa-clock"></i>
     </div>
     <h6 class="fw-bold text-danger mb-1" style="font-size: 12px; letter-spacing: 1px;">PENDÊNCIA</h6>
-    <p class="mb-3" style="font-size: 13px; line-height: 1.3; color: #333;">Sua parcela de <strong>{{
+    <p class="mb-3" style="font-size: 13px; line-height: 1.3;">Sua parcela de <strong>{{
         dados_dashboard.proxima_parcela_valor }}</strong> está vencida.</p>
     <a href="https://wa.me/5511999999999?text=Olá Ricardo, gostaria de regularizar meu pagamento." target="_blank"
       class="btn btn-success btn-sm w-100 fw-bold">
@@ -265,11 +276,23 @@
           borderDash.push([]);
           customTooltips.push('Pagamento Antecipado!');
           break;
+        case 'pago_atrasado':
+          backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-pago-atrasado'));
+          borderColors.push(pegarCorDoCSS('--cor-cliente-historico-pago-atrasado-borda'));
+          borderDash.push([]);
+          customTooltips.push('Pago com Atraso');
+          break;
         case 'pago_em_dia':
           backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-em-dia'));
           borderColors.push(pegarCorDoCSS('--cor-cliente-historico-em-dia-borda'));
           borderDash.push([]);
           customTooltips.push('Pago em Dia');
+          break;
+        case 'futuro': // New case for future pending payments
+          backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-futuro'));
+          borderColors.push(pegarCorDoCSS('--cor-cliente-historico-futuro-borda'));
+          borderDash.push([]);
+          customTooltips.push('Parcela Futura');
           break;
         case 'atual':
           backgroundColors.push(pegarCorDoCSS('--cor-cliente-historico-atual'));
@@ -319,6 +342,9 @@
         },
         scales: {
           xAxes: [{ // Adicionado xAxes para controlar a cor dos rótulos (meses)
+            barPercentage: 0.4,       // Controla a largura da barra em relação ao espaço disponível
+            categoryPercentage: 0.5,  // Controla o espaçamento entre as categorias (meses)
+            maxBarThickness: 50,      // Define uma largura máxima para a barra não ficar gigante
             ticks: {
               fontColor: pegarCorDoCSS('--cor-grafico-texto'), // Usa a cor do tema
             },
