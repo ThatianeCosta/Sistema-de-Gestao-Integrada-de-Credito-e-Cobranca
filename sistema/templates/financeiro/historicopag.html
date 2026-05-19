@@ -9,7 +9,7 @@
 <div class="page-inner">
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
         <div>
-            <h3 class="fw-bold mb-3">Dashboard de Histórico de Pagamentos</h3>
+            <h3 class="fw-bold mb-3">Gestão de Pagamentos</h3>
             <h6 class="op-7 mb-2">Acompanhamento financeiro de parcelas e pagamentos</h6>
         </div>
     </div>
@@ -17,25 +17,24 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-round">
-                <div class="card-header">
-                    <div class="d-flex align-items-center justify-content-between">
+                <div class="card-header card-header-historico pb-2"> <!-- pb-2 deixa o azul mais justo -->
+                    <div class="d-flex align-items-center justify-content-between" style="margin-bottom: 0 !important;">
                         <div class="card-title">Histórico de Pagamentos</div>
-                        <div class="input-group w-25">
+                        <div class="input-group w-25 mb-0"> <!-- mb-0 tira o espaço embaixo da busca -->
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
                             <input type="text" id="filtro-historico" class="form-control"
                                 placeholder="Pesquisar cliente...">
                         </div>
                     </div>
                 </div>
-                <div class="card-body pt-0">
-                    <div class="table-responsive">
-                        <table id="historicoPagamentosTable" class="display table table-striped table-hover">
-                            <thead class="thead-dark">
+                <div class="card-body card-body-no-horizontal-padding p-0">
+                    <div class="table-responsive" style="padding: 0 !important; margin: 0 !important;">
+                        <table id="historicoPagamentosTable" class="display table table-striped table-hover mt-0 mb-0 border-0">
+                            <thead class="thead-custom-historico">
                                 <tr>
                                     <th>Cliente</th>
                                     <th>Descrição</th>
                                     <th>Vencimento</th>
-                                    <th>Data Pagamento</th>
                                     <th>Valor da Parcela (R$)</th>
                                     <th>Dias de Atraso</th>
                                     <th>Status da Parcela</th>
@@ -49,14 +48,7 @@
                                     <td>{{ item.cliente }}</td>
                                     <td>{{ item.descricao }}</td>
                                     <td>{{ item.vencimento }}</td>
-                                    <td>
-                                        {% if item.data_pagamento %}
-                                        {{ item.data_pagamento }}
-                                        {% else %}
-                                        -
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ item.valor }}</td>
+                                    <td class="{% if item.status == 'Atrasado' %}fw-bold text-danger{% endif %}">R$ {{ item.valor_atualizado }}</td>
                                     <td class="text-center">
                                         {% if item.dias_atraso > 0 %}
                                         <span class="text-danger fw-bold">{{ item.dias_atraso }}</span>
@@ -119,7 +111,7 @@
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
                                 <p class="card-category">Total do Empréstimo</p>
-                                <h4 class="card-title">{{ resumo.total_emprestimo }}</h4>
+                                <h4 class="card-title">R$ {{ resumo.total_emprestimo }}</h4>
                             </div>
                         </div>
                     </div>
@@ -155,8 +147,8 @@
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
                                 <p class="card-category">Próximo Vencimento</p>
-                                <h4 class="card-title">{{ resumo.proximo_vencimento_data }}</h4>
-                                <p class="card-category mt-1 fw-bold">{{ resumo.proximo_vencimento_valor }}</p>
+                                <h4 class="card-title">R$ {{ resumo.proximo_vencimento_valor }}</h4>
+                                <p class="card-category mt-1 fw-bold">Vencimento: {{ resumo.proximo_vencimento_data }}</p>
                             </div>
                         </div>
                     </div>
@@ -172,10 +164,10 @@
                 <div class="card-header card-header-cliente">
                     <div class="card-title">Detalhes das Parcelas</div>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="tabela-meus-pagamentos" class="table align-items-center mb-0">
-                            <thead class="thead-light">
+                <div class="card-body card-body-no-horizontal-padding p-0">
+                    <div class="table-responsive" style="padding: 0 !important; margin: 0 !important;">
+                        <table id="tabela-meus-pagamentos" class="table align-items-center mb-0 border-0">
+                            <thead class="thead-custom-historico">
                                 <tr>
                                     <th>N° da Parcela</th>
                                     <th>Vencimento</th>
@@ -208,11 +200,8 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="form-button-action">
-                                            <!-- Botão de Download: Adicionamos uma classe para o JavaScript -->
-                                            <button type="button" class="btn btn-link btn-primary btn-baixar-boleto"
-                                                title="Baixar Boleto Atualizado">
-                                                <i class="fa fa-download"></i>
-                                            </button>
+                                            <!-- Botão de button" class="btn btn-link btn-primary btn-baixar-boleto"
+                                                title="Imprimir Boleto Atualizado">
                                             <!-- Botão de Cálculo: Adicionamos os atributos 'data-*' para passar os dados para o modal -->
                                             <button type="button" class="btn btn-link btn-info btn-ver-calculo"
                                                 title="Ver Detalhes do Cálculo" data-bs-toggle="modal"
@@ -230,11 +219,11 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <!-- Rodapé Informativo -->
-                <div class="card-footer text-center text-muted" style="font-size: 0.8rem;">
-                    <p class="mb-0">Cálculos baseados em Multa de 2% e Juros de Mora de 0,33% ao dia, conforme contrato.
-                    </p>
+
+                    <!-- Rodapé Informativo movido para dentro do card-body e sem bordas -->
+                    <div class="text-center text-muted py-3" style="font-size: 0.8rem; background: rgba(0,0,0,0.02);">
+                        <p class="mb-0">Cálculos baseados em Multa de 2% e Juros de Mora de 0,33% ao dia, conforme contrato.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -288,7 +277,7 @@
             "ordering": false,
             "pageLength": 5,
             "lengthChange": false,
-            "dom": 'rt<"d-flex justify-content-between pt-2"ip>',
+            "dom": 'rt<"d-flex justify-content-between p-3"ip>',
             "language": {
                 "zeroRecords": "Nenhum registro encontrado",
                 "info": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
