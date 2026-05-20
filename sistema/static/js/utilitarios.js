@@ -9,7 +9,7 @@ function mascaraTelefoneCelular() {
     }
 
 
-    // Selecionar todos os Inputs que tiver classe 'mascara-telefone-celular celular'
+    // Selecionar todos os Inputs que tiver classe 'mascara-telefone-celular'
     const inputsTelefoneCelular = document.querySelectorAll(".mascara-telefone-celular");
 
     // Aplicando o evento de Input para cada campo que tiver a classe
