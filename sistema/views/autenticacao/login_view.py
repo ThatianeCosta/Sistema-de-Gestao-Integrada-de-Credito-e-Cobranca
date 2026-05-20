@@ -78,7 +78,7 @@ return [
     {'id': 4, 'nome': 'Roberto Alves', 'valor_parcela': '500,00', 'parcelas_restantes': 9, 'total_parcelas': 12, 'limite_disponivel': '5.000,00', 'emprestimos_ativos': 1, 'taxa': '2,50%', 'detalhes': [{'tipo': 'Pessoal', 'valor': '6.000,00', 'status': 'Pendente', 'vencimento': '15/04/2026'}]},
     {'id': 5, 'nome': 'Carlos Pereira', 'valor_parcela': '10.000,00', 'parcelas_restantes': 2, 'total_parcelas': 2, 'limite_disponivel': '0,00', 'emprestimos_ativos': 1, 'taxa': '2,50%', 'detalhes': [{'tipo': 'Empréstimo Rápido', 'valor': '20.000,00', 'status': 'Atrasado', 'vencimento': '10/01/2026'}]},
     {'id': 6, 'nome': 'Fernanda Lima', 'valor_parcela': '600,00', 'parcelas_restantes': 7, 'total_parcelas': 10, 'limite_disponivel': '500,00', 'emprestimos_ativos': 1, 'taxa': '2,50%', 'detalhes': [{'tipo': 'Pessoal', 'valor': '6.000,00', 'status': 'Pendente', 'vencimento': '05/04/2026'}]},
-    {'id': 7, 'nome': 'Aline Ferreira', 'valor_parcela': '10.000,00', 'parcelas_restantes': 6, 'total_parcelas': 7, 'limite_disponivel': '20.000,00', 'emprestimos_ativos': 1, 'taxa': '2,50%', 'detalhes': [{'valor': '70.000,00', 'vencimento': '12/02/2026'}]},
+    {'id': 7, 'nome': 'Aline Ferreira', 'valor_parcela': '10.000,00', 'parcelas_restantes': 6, 'total_parcelas': 7, 'limite_disponivel': '20.000,00', 'emprestimos_ativos': 1, 'taxa': '2,50%', 'detalhes': [{'tipo': 'Consignado', 'valor': '70.000,00', 'status': 'Atrasado', 'vencimento': '12/02/2026'}]},
 ]
 
 @app.route('/')
