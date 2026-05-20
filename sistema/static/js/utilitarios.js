@@ -83,10 +83,26 @@ function verificarTemaSalvo() {
 // esteja no body antes de qualquer script de gráfico rodar.
 verificarTemaSalvo();
 
+function iniciarRelogio() {
+    function atualizar() {
+        const agora = new Date();
+        const h = String(agora.getHours()).padStart(2, '0');
+        const m = String(agora.getMinutes()).padStart(2, '0');
+        const s = String(agora.getSeconds()).padStart(2, '0');
+        const display = document.getElementById('relogio-digital');
+        if (display) {
+            display.textContent = `${h}:${m}:${s}`;
+        }
+    }
+    setInterval(atualizar, 1000); // Faz o relógio atualizar a cada 1 segundo
+    atualizar(); // Chama uma vez na hora para não começar em 00:00:00
+}
+
 // Inicializador de Funções
 function inicializar() {
     mascaraTelefoneCelular();
     mascaraSomenteLetras();
+    iniciarRelogio(); // Ativa o relógio assim que a página carrega
 }
 
 window.addEventListener('load', inicializar);
