@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/7a59c6c3-6bf9-4e3c-87d0-07af853db1b2
 
 
 ### 🎯 Objetivos do Projeto
-O propósito é fornecer uma infraestrutura que simplifica operações financeiras detalhadas. Através da automação de encargos, dashboards interativos e uma régua de cobrança via WhatsApp, o projeto visa maximizar a eficiência operacional e reduzir a inadimplência, mantendo uma experiência de usuário moderna
+O propósito é fornecer uma infraestrutura que simplifica operações financeiras detalhadas. Através da automação de encargos, dashboards interativos e uma régua de cobrança via WhatsApp, o projeto visa maximizar a eficiência operacional e reduzir a inadimplência, mantendo uma experiência de usuário moderna.
 
 ### 🗄️ Bases de Dados
 O projeto utiliza um banco de dados relacional para persistência de usuários, cargos e configurações do sistema.
